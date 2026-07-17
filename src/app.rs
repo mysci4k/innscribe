@@ -1,5 +1,5 @@
-use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window};
-use gpui_component::{h_flex, v_flex};
+use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
+use gpui_component::{h_flex, scroll::ScrollableElement, v_flex};
 
 use crate::{
     components::{AppSidebar, AppTitleBar},
@@ -47,7 +47,14 @@ impl Render for MainApp {
                 .size_full()
                 .flex_1()
                 .child(self.title_bar.clone())
-                .child(self.render_view(cx)),
+                .child(
+                    div()
+                        .size_full()
+                        .px_4()
+                        .py_2()
+                        .overflow_y_scrollbar()
+                        .child(self.render_view(cx)),
+                ),
         )
     }
 }

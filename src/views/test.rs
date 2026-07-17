@@ -15,9 +15,6 @@ impl TestView {
 
 impl Render for TestView {
     fn render(&mut self, _window: &mut gpui::Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        v_flex()
-            .size_full()
-            .p_8()
-            .child(div().text_3xl().child("Test"))
+        v_flex().size_full().child(div().text_3xl().child("Test"))
     }
 }

@@ -17,7 +17,6 @@ impl Render for DashboardView {
     fn render(&mut self, _window: &mut gpui::Window, _cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .size_full()
-            .p_8()
             .child(div().text_3xl().child("Dashboard"))
     }
 }
