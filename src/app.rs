@@ -4,17 +4,19 @@ use gpui_component::{
     button::{Button, ButtonVariants},
 };
 
-use crate::state::AppState;
+use crate::{components::AppSidebar, state::AppState};
 
 pub struct MainApp {
     app_state: Entity<AppState>,
+    sidebar: Entity<AppSidebar>,
 }
 
 impl MainApp {
     pub fn new(cx: &mut Context<Self>) -> Self {
         let app_state = cx.new(|cx| AppState::new(cx));
+        let sidebar = cx.new(|cx| AppSidebar::new(app_state.clone(), cx));
 
-        Self { app_state }
+        Self { app_state, sidebar }
     }
 }
 
