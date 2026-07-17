@@ -1,8 +1,5 @@
-use gpui::{Context, IntoElement, ParentElement, Render, Styled, Window, div};
-use gpui_component::{
-    StyledExt,
-    button::{Button, ButtonVariants},
-};
+use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window};
+use gpui_component::h_flex;
 
 use crate::{components::AppSidebar, state::AppState};
 
@@ -22,18 +19,6 @@ impl MainApp {
 
 impl Render for MainApp {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .v_flex()
-            .gap_2()
-            .size_full()
-            .items_center()
-            .justify_center()
-            .child("Hello, World!")
-            .child(
-                Button::new("ok")
-                    .primary()
-                    .label("Let's Go!")
-                    .on_click(|_, _, _| println!("Clicked!")),
-            )
+        h_flex().size_full().child(self.sidebar.clone())
     }
 }
