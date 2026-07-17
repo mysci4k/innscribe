@@ -1,4 +1,4 @@
-use gpui::{Context, Entity, ParentElement, Render, Styled, div, prelude::FluentBuilder, px};
+use gpui::{Context, ParentElement, Render, Styled, WeakEntity, div, prelude::FluentBuilder, px};
 use gpui_component::{
     ActiveTheme, Icon, IconName, h_flex,
     sidebar::{
@@ -11,12 +11,12 @@ use gpui_component::{
 use crate::state::{AppScreen, AppState};
 
 pub struct AppSidebar {
-    state: Entity<AppState>,
+    state: WeakEntity<AppState>,
     collapsed: bool,
 }
 
 impl AppSidebar {
-    pub fn new(state: Entity<AppState>, _cx: &mut Context<Self>) -> Self {
+    pub fn new(state: WeakEntity<AppState>, _cx: &mut Context<Self>) -> Self {
         Self {
             state,
             collapsed: false,
@@ -37,12 +37,20 @@ impl AppSidebar {
         cx: &mut Context<Self>,
     ) -> SidebarMenuItem {
         let state = self.state.clone();
-        let is_active = self.state.read(cx).current_screen == target;
+        let is_active = self
+            .state
+            .upgrade()
+            .map(|s| s.read(cx).current_screen == target)
+            .unwrap_or(false);
 
         SidebarMenuItem::new(label)
             .icon(icon)
             .active(is_active)
-            .on_click(move |_, _, cx| state.update(cx, |s, cx| s.navigate(target.clone(), cx)))
+            .on_click(move |_, _, cx| {
+                if let Some(state) = state.upgrade() {
+                    state.update(cx, |s, cx| s.navigate(target.clone(), cx))
+                }
+            })
     }
 }
 

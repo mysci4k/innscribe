@@ -1,4 +1,4 @@
-use gpui::{Context, Entity, IntoElement, ParentElement, Render, Styled, Window};
+use gpui::{Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window};
 use gpui_component::{
     IconName, Sizable, TitleBar,
     button::{Button, ButtonVariants},
@@ -8,11 +8,11 @@ use gpui_component::{
 use crate::components::AppSidebar;
 
 pub struct AppTitleBar {
-    sidebar: Entity<AppSidebar>,
+    sidebar: WeakEntity<AppSidebar>,
 }
 
 impl AppTitleBar {
-    pub fn new(sidebar: Entity<AppSidebar>) -> Self {
+    pub fn new(sidebar: WeakEntity<AppSidebar>) -> Self {
         Self { sidebar }
     }
 }
@@ -27,7 +27,11 @@ impl Render for AppTitleBar {
                     .small()
                     .ghost()
                     .icon(IconName::PanelLeft)
-                    .on_click(move |_, _, cx| sidebar.update(cx, |s, cx| s.toggle(cx))),
+                    .on_click(move |_, _, cx| {
+                        if let Some(sidebar) = sidebar.upgrade() {
+                            sidebar.update(cx, |s, cx| s.toggle(cx))
+                        }
+                    }),
             ),
         )
     }
