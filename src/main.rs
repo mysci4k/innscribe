@@ -4,7 +4,7 @@ mod state;
 mod views;
 
 use gpui::{AppContext, WindowOptions};
-use gpui_component::Root;
+use gpui_component::{Root, TitleBar};
 
 use crate::app::MainApp;
 
@@ -16,6 +16,7 @@ fn main() {
 
         cx.spawn(async move |cx| {
             let window_options = WindowOptions {
+                titlebar: Some(TitleBar::title_bar_options()),
                 focus: true,
                 show: true,
                 app_id: Some("innscribe".into()),
