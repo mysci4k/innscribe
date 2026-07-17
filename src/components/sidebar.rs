@@ -23,6 +23,12 @@ impl AppSidebar {
         }
     }
 
+    pub fn toggle(&mut self, cx: &mut Context<Self>) {
+        self.collapsed = !self.collapsed;
+
+        cx.notify();
+    }
+
     fn nav_item(
         &self,
         label: &'static str,
