@@ -1,4 +1,6 @@
-use gpui::{Context, ParentElement, Render, Styled, WeakEntity, div, prelude::FluentBuilder, px};
+use gpui::{
+    Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder, px,
+};
 use gpui_component::{
     ActiveTheme, Icon, IconName, h_flex,
     sidebar::{
@@ -10,9 +12,12 @@ use gpui_component::{
 
 use crate::state::{AppScreen, AppState};
 
+const MOBILE_BREAKPOINT: f32 = 768.;
+
 pub struct AppSidebar {
     state: WeakEntity<AppState>,
     collapsed: bool,
+    mobile_open: bool,
 }
 
 impl AppSidebar {
@@ -20,11 +25,19 @@ impl AppSidebar {
         Self {
             state,
             collapsed: false,
+            mobile_open: false,
         }
     }
 
-    pub fn toggle(&mut self, cx: &mut Context<Self>) {
-        self.collapsed = !self.collapsed;
+    pub fn toggle(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let is_mobile = window.viewport_size().width < px(MOBILE_BREAKPOINT);
+        if is_mobile {
+            self.mobile_open = !self.mobile_open;
+            self.collapsed = false;
+        } else {
+            self.collapsed = !self.collapsed;
+            self.mobile_open = false;
+        }
 
         cx.notify();
     }
@@ -57,13 +70,25 @@ impl AppSidebar {
 impl Render for AppSidebar {
     fn render(
         &mut self,
-        _window: &mut gpui::Window,
+        window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl gpui::prelude::IntoElement {
-        Sidebar::new("innscribe-sidebar")
-            .collapsible(SidebarCollapsible::Icon)
-            .collapsed(self.collapsed)
-            .w(px(240.))
+        let viewport = window.viewport_size();
+        let is_mobile = viewport.width < px(MOBILE_BREAKPOINT);
+        let collapsed = if is_mobile {
+            !self.mobile_open
+        } else {
+            self.collapsed
+        };
+
+        Sidebar::new("app-sidebar")
+            .collapsible(if is_mobile {
+                SidebarCollapsible::Offcanvas
+            } else {
+                SidebarCollapsible::Icon
+            })
+            .collapsed(collapsed)
+            .w(if is_mobile { px(180.) } else { px(240.) })
             .header(
                 SidebarHeader::new()
                     .child(
@@ -76,14 +101,14 @@ impl Render for AppSidebar {
                             .rounded(cx.theme().radius)
                             .bg(cx.theme().sidebar_primary)
                             .text_color(cx.theme().sidebar_primary_foreground)
-                            .when(self.collapsed, |this| {
+                            .when(collapsed, |this| {
                                 this.size_4()
                                     .bg(cx.theme().transparent)
                                     .text_color(cx.theme().foreground)
                             })
                             .child(Icon::new(IconName::GalleryVerticalEnd)),
                     )
-                    .when(!self.collapsed, |this| {
+                    .when(!collapsed, |this| {
                         this.child(
                             v_flex()
                                 .flex_1()
@@ -115,7 +140,7 @@ impl Render for AppSidebar {
                     h_flex()
                         .gap_2()
                         .child(Icon::new(IconName::CircleUser))
-                        .when(!self.collapsed, |this| this.child("John Snow")),
+                        .when(!collapsed, |this| this.child("John Snow")),
                 ),
             )
     }

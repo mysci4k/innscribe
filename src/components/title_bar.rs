@@ -27,9 +27,9 @@ impl Render for AppTitleBar {
                     .small()
                     .ghost()
                     .icon(IconName::PanelLeft)
-                    .on_click(move |_, _, cx| {
+                    .on_click(move |_, window, cx| {
                         if let Some(sidebar) = sidebar.upgrade() {
-                            sidebar.update(cx, |s, cx| s.toggle(cx))
+                            sidebar.update(cx, |s, cx| s.toggle(window, cx))
                         }
                     }),
             ),
