@@ -4,7 +4,19 @@ use gpui_component::{
     button::{Button, ButtonVariants},
 };
 
-pub struct MainApp;
+use crate::state::AppState;
+
+pub struct MainApp {
+    app_state: Entity<AppState>,
+}
+
+impl MainApp {
+    pub fn new(cx: &mut Context<Self>) -> Self {
+        let app_state = cx.new(|cx| AppState::new(cx));
+
+        Self { app_state }
+    }
+}
 
 impl Render for MainApp {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
