@@ -80,12 +80,21 @@ impl Render for AppSidebar {
                     }),
             )
             .child(
-                SidebarGroup::new("Navigation").child(SidebarMenu::new().child(self.nav_item(
-                    "Dashboard",
-                    AppScreen::Dashboard,
-                    IconName::LayoutDashboard,
-                    cx,
-                ))),
+                SidebarGroup::new("Navigation").child(
+                    SidebarMenu::new()
+                        .child(self.nav_item(
+                            "Dashboard",
+                            AppScreen::Dashboard,
+                            IconName::LayoutDashboard,
+                            cx,
+                        ))
+                        .child(self.nav_item(
+                            "Test",
+                            AppScreen::Test,
+                            IconName::LayoutDashboard,
+                            cx,
+                        )),
+                ),
             )
             .footer(
                 SidebarFooter::new().child(
