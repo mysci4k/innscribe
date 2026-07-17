@@ -1,4 +1,5 @@
 mod app;
+mod state;
 
 use gpui::{AppContext, WindowOptions};
 use gpui_component::Root;
