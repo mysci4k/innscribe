@@ -2,7 +2,7 @@ use gpui::{
     Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder, px,
 };
 use gpui_component::{
-    ActiveTheme, Icon, IconName, h_flex,
+    ActiveTheme, Icon, h_flex,
     sidebar::{
         Sidebar, SidebarCollapsible, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu,
         SidebarMenuItem,
@@ -10,7 +10,10 @@ use gpui_component::{
     v_flex,
 };
 
-use crate::state::{AppScreen, AppState};
+use crate::{
+    assets::AppIcon,
+    state::{AppScreen, AppState},
+};
 
 const MOBILE_BREAKPOINT: f32 = 768.;
 
@@ -46,7 +49,7 @@ impl AppSidebar {
         &self,
         label: &'static str,
         target: AppScreen,
-        icon: IconName,
+        icon: AppIcon,
         cx: &mut Context<Self>,
     ) -> SidebarMenuItem {
         let state = self.state.clone();
@@ -106,7 +109,7 @@ impl Render for AppSidebar {
                                     .bg(cx.theme().transparent)
                                     .text_color(cx.theme().foreground)
                             })
-                            .child(Icon::new(IconName::GalleryVerticalEnd)),
+                            .child(Icon::new(AppIcon::Dices)),
                     )
                     .when(!collapsed, |this| {
                         this.child(
@@ -121,18 +124,8 @@ impl Render for AppSidebar {
             .child(
                 SidebarGroup::new("Navigation").child(
                     SidebarMenu::new()
-                        .child(self.nav_item(
-                            "Dashboard",
-                            AppScreen::Dashboard,
-                            IconName::LayoutDashboard,
-                            cx,
-                        ))
-                        .child(self.nav_item(
-                            "Test",
-                            AppScreen::Test,
-                            IconName::LayoutDashboard,
-                            cx,
-                        )),
+                        .child(self.nav_item("Dashboard", AppScreen::Dashboard, AppIcon::Map, cx))
+                        .child(self.nav_item("Test", AppScreen::Test, AppIcon::Map, cx)),
                 ),
             )
             .footer(
