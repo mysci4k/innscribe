@@ -3085,7 +3085,6 @@ dependencies = [
  "anyhow",
  "gpui",
  "gpui-component",
- "gpui-component-assets",
  "gpui_platform",
  "rust-embed",
 ]
