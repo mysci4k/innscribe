@@ -15,7 +15,7 @@ pub struct MainApp {
 
 impl MainApp {
     pub fn new(cx: &mut Context<Self>) -> Self {
-        let app_state = cx.new(|cx| AppState::new(cx));
+        let app_state = cx.new(AppState::new);
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
 
