@@ -1,11 +1,11 @@
 use gpui::{Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window};
 use gpui_component::{
-    ActiveTheme, IconName, Sizable, Theme, ThemeMode, TitleBar,
+    ActiveTheme, Sizable, Theme, ThemeMode, TitleBar,
     button::{Button, ButtonVariants},
     h_flex,
 };
 
-use crate::components::AppSidebar;
+use crate::{assets::AppIcon, components::AppSidebar};
 
 pub struct AppTitleBar {
     sidebar: WeakEntity<AppSidebar>,
@@ -34,7 +34,7 @@ impl Render for AppTitleBar {
                         Button::new("toggle-sidebar")
                             .small()
                             .ghost()
-                            .icon(IconName::PanelLeft)
+                            .icon(AppIcon::PanelLeft)
                             .on_click(move |_, window, cx| {
                                 if let Some(sidebar) = sidebar.upgrade() {
                                     sidebar.update(cx, |s, cx| s.toggle(window, cx))
@@ -45,11 +45,7 @@ impl Render for AppTitleBar {
                         Button::new("toggle-theme")
                             .small()
                             .ghost()
-                            .icon(if is_dark {
-                                IconName::Sun
-                            } else {
-                                IconName::Moon
-                            })
+                            .icon(if is_dark { AppIcon::Sun } else { AppIcon::Moon })
                             .on_click(move |_, window, cx| {
                                 let next_mode = if cx.theme().is_dark() {
                                     ThemeMode::Light
