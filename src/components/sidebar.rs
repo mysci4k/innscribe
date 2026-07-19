@@ -2,10 +2,9 @@ use gpui::{
     Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder, px,
 };
 use gpui_component::{
-    ActiveTheme, Icon, h_flex,
+    ActiveTheme, Icon,
     sidebar::{
-        Sidebar, SidebarCollapsible, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu,
-        SidebarMenuItem,
+        Sidebar, SidebarCollapsible, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem,
     },
     v_flex,
 };
@@ -126,14 +125,6 @@ impl Render for AppSidebar {
                     SidebarMenu::new()
                         .child(self.nav_item("Dashboard", AppScreen::Dashboard, AppIcon::Map, cx))
                         .child(self.nav_item("Test", AppScreen::Test, AppIcon::Map, cx)),
-                ),
-            )
-            .footer(
-                SidebarFooter::new().child(
-                    h_flex()
-                        .gap_2()
-                        .child(Icon::new(IconName::CircleUser))
-                        .when(!collapsed, |this| this.child("John Snow")),
                 ),
             )
     }
