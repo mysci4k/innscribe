@@ -111,13 +111,7 @@ impl Render for AppSidebar {
                             .child(Icon::new(AppIcon::Dices)),
                     )
                     .when(!collapsed, |this| {
-                        this.child(
-                            v_flex()
-                                .flex_1()
-                                .overflow_hidden()
-                                .child("Acme Inc")
-                                .child(div().text_xs().child("Enterprise")),
-                        )
+                        this.child(v_flex().flex_1().overflow_hidden().child("InnScribe"))
                     }),
             )
             .child(
