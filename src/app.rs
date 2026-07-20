@@ -11,6 +11,8 @@ pub struct MainApp {
     app_state: Entity<AppState>,
     sidebar: Entity<AppSidebar>,
     title_bar: Entity<AppTitleBar>,
+    dashboard_view: Entity<DashboardView>,
+    test_view: Entity<TestView>,
 }
 
 impl MainApp {
@@ -18,24 +20,22 @@ impl MainApp {
         let app_state = cx.new(AppState::new);
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
+        let dashboard_view = cx.new(|cx| DashboardView::new(app_state.downgrade(), cx));
+        let test_view = cx.new(|cx| TestView::new(app_state.downgrade(), cx));
 
         Self {
             app_state,
             sidebar,
             title_bar,
+            dashboard_view,
+            test_view,
         }
     }
 
     fn render_view(&self, cx: &mut Context<Self>) -> impl IntoElement {
-        let state = self.app_state.clone();
-
         match self.app_state.read(cx).current_screen.clone() {
-            AppScreen::Dashboard => cx
-                .new(|cx| DashboardView::new(state.downgrade(), cx))
-                .into_any_element(),
-            AppScreen::Test => cx
-                .new(|cx| TestView::new(state.downgrade(), cx))
-                .into_any_element(),
+            AppScreen::Dashboard => self.dashboard_view.clone().into_any_element(),
+            AppScreen::Test => self.test_view.clone().into_any_element(),
         }
     }
 }
