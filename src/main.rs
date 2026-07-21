@@ -1,6 +1,7 @@
 mod app;
 mod assets;
 mod components;
+mod logging;
 mod state;
 mod views;
 
@@ -10,6 +11,8 @@ use gpui_component::{Root, TitleBar};
 use crate::{app::MainApp, assets::AppAssets};
 
 fn main() {
+    logging::init();
+
     let app = gpui_platform::application().with_assets(AppAssets);
 
     app.run(move |cx| {
