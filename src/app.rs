@@ -1,13 +1,16 @@
 use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
 use gpui_component::{h_flex, scroll::ScrollableElement, v_flex};
+use toasty::Db;
 
 use crate::{
     components::{AppSidebar, AppTitleBar},
+    database::Database,
     state::{AppScreen, AppState},
     views::{DashboardView, TestView},
 };
 
 pub struct MainApp {
+    database: Entity<Database>,
     app_state: Entity<AppState>,
     sidebar: Entity<AppSidebar>,
     title_bar: Entity<AppTitleBar>,
@@ -16,14 +19,16 @@ pub struct MainApp {
 }
 
 impl MainApp {
-    pub fn new(cx: &mut Context<Self>) -> Self {
-        let app_state = cx.new(AppState::new);
+    pub fn new(database: Db, cx: &mut Context<Self>) -> Self {
+        let database = cx.new(|cx| Database::from_db(database, cx));
+        let app_state = cx.new(|cx| AppState::new(database.downgrade(), cx));
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
         let dashboard_view = cx.new(|cx| DashboardView::new(app_state.downgrade(), cx));
         let test_view = cx.new(|cx| TestView::new(app_state.downgrade(), cx));
 
         Self {
+            database,
             app_state,
             sidebar,
             title_bar,
