@@ -1,6 +1,7 @@
 mod app;
 mod assets;
 mod components;
+mod database;
 mod logging;
 mod state;
 mod views;
