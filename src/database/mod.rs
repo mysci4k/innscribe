@@ -3,4 +3,4 @@ pub mod models;
 mod store;
 
 pub use database::{init, path};
-pub use store::Database;
+pub use store::{Database, TableStore};
