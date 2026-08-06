@@ -78,7 +78,7 @@ pub struct Character {
     #[auto]
     pub updated_at: Timestamp,
     #[index]
-    pub archived_at: Timestamp,
+    pub archived_at: Option<Timestamp>,
     #[index]
-    pub deleted_at: Timestamp,
+    pub deleted_at: Option<Timestamp>,
 }
