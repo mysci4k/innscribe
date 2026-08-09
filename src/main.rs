@@ -11,7 +11,7 @@ use gpui::{AppContext, WindowOptions};
 use gpui_component::{Root, TitleBar};
 use gpui_tokio::Tokio;
 
-use crate::{app::MainApp, assets::AppAssets};
+use crate::{app::MainApp, assets::AppAssets, database::Database};
 
 fn main() {
     logging::init();
@@ -29,6 +29,8 @@ fn main() {
             let outcome: Result<()> = async {
                 let db = Tokio::spawn_result(cx, database::init(db_path)).await?;
 
+                cx.update(|cx| cx.set_global(Database::from_db(db)));
+
                 let window_options = WindowOptions {
                     titlebar: Some(TitleBar::title_bar_options()),
                     focus: true,
@@ -38,7 +40,7 @@ fn main() {
                 };
 
                 cx.open_window(window_options, |window, cx| {
-                    let view = cx.new(|cx| MainApp::new(db, cx));
+                    let view = cx.new(MainApp::new);
 
                     cx.new(|cx| Root::new(view, window, cx))
                 })

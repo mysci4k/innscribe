@@ -1,6 +1,4 @@
-use gpui::{Context, WeakEntity};
-
-use crate::database::Database;
+use gpui::Context;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppScreen {
@@ -10,14 +8,12 @@ pub enum AppScreen {
 
 pub struct AppState {
     pub current_screen: AppScreen,
-    pub database: WeakEntity<Database>,
 }
 
 impl AppState {
-    pub fn new(database: WeakEntity<Database>, _cx: &mut Context<Self>) -> Self {
+    pub fn new(_cx: &mut Context<Self>) -> Self {
         Self {
             current_screen: AppScreen::Dashboard,
-            database,
         }
     }
 

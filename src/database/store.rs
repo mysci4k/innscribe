@@ -1,5 +1,5 @@
 use anyhow::Result;
-use gpui::{AppContext, Context, Task};
+use gpui::{AppContext, Context, Global, Task};
 use gpui_tokio::Tokio;
 use toasty::Db;
 
@@ -7,8 +7,10 @@ pub struct Database {
     db: Db,
 }
 
+impl Global for Database {}
+
 impl Database {
-    pub fn from_db(db: Db, _cx: &mut Context<Self>) -> Self {
+    pub fn from_db(db: Db) -> Self {
         Self { db }
     }
 
