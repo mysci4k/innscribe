@@ -51,7 +51,7 @@ impl Render for MainApp {
                     div()
                         .size_full()
                         .px_4()
-                        .py_2()
+                        .py_4()
                         .overflow_y_scrollbar()
                         .child(self.render_view(cx)),
                 ),
