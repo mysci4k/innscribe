@@ -7,7 +7,7 @@ mod state;
 mod views;
 
 use anyhow::Result;
-use gpui::{AppContext, WindowOptions};
+use gpui::{AppContext, WindowOptions, px, size};
 use gpui_component::{Root, TitleBar};
 use gpui_tokio::Tokio;
 
@@ -36,6 +36,7 @@ fn main() {
                     focus: true,
                     show: true,
                     app_id: Some("innscribe".into()),
+                    window_min_size: Some(size(px(1024.), px(768.))),
                     ..Default::default()
                 };
 
