@@ -3,6 +3,8 @@ use gpui::{AppContext, Context, Global, Task};
 use gpui_tokio::Tokio;
 use toasty::Db;
 
+use crate::database::repositories::Characters;
+
 pub struct Database {
     db: Db,
 }
@@ -16,6 +18,10 @@ impl Database {
 
     pub fn handle(&self) -> Db {
         self.db.clone()
+    }
+
+    pub fn characters(&self) -> Characters {
+        Characters { db: self.handle() }
     }
 }
 
