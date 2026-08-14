@@ -1,6 +1,7 @@
+use anyhow::Result;
 use toasty::Db;
 
-use crate::database::TableStore;
+use crate::database::{TableStore, models::Character};
 
 pub struct Characters {
     pub db: Db,
@@ -12,4 +13,10 @@ impl TableStore for Characters {
     }
 }
 
-impl Characters {}
+impl Characters {
+    pub async fn list(&self) -> Result<Vec<Character>> {
+        let result = Character::all().exec(&mut self.handle()).await?;
+
+        Ok(result)
+    }
+}
