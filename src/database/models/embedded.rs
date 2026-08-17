@@ -56,3 +56,15 @@ pub struct Currency {
     pub gold: i64,
     pub platinum: i64,
 }
+
+#[derive(Debug, Clone, Embed)]
+pub struct CombatProficiencies {
+    pub simple_melee_weapons: bool,
+    pub simple_ranged_weapons: bool,
+    pub martial_melee_weapons: bool,
+    pub martial_ranged_weapons: bool,
+    pub light_armor: bool,
+    pub medium_armor: bool,
+    pub heavy_armor: bool,
+    pub shields: bool,
+}

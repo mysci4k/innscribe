@@ -3,7 +3,7 @@ use toasty::Model;
 use uuid::Uuid;
 
 use crate::database::models::{
-    AbilityScores, Currency, SavingThrowProficiencies, SkillProficiencies,
+    AbilityScores, CombatProficiencies, Currency, SavingThrowProficiencies, SkillProficiencies,
 };
 
 #[derive(Debug, Clone, Model)]
@@ -30,6 +30,7 @@ pub struct Character {
     pub ability_scores: AbilityScores,
     pub saving_throws: SavingThrowProficiencies,
     pub skills: SkillProficiencies,
+    pub combat_proficiencies: CombatProficiencies,
 
     pub armor_class: i32,
     #[default(0)]
