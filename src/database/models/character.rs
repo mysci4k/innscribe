@@ -1,9 +1,10 @@
 use jiff::Timestamp;
-use toasty::Model;
+use toasty::{Deferred, Model};
 use uuid::Uuid;
 
 use crate::database::models::{
-    AbilityScores, CombatProficiencies, Currency, SavingThrowProficiencies, SkillProficiencies,
+    AbilityScores, CharacterClass, CombatProficiencies, Currency, SavingThrowProficiencies,
+    SkillProficiencies,
 };
 
 #[derive(Debug, Clone, Model)]
@@ -73,6 +74,9 @@ pub struct Character {
     pub campaign_name: Option<String>,
     pub dungeon_master_name: Option<String>,
     pub avatar_path: Option<String>,
+
+    #[has_many]
+    pub classes: Deferred<Vec<CharacterClass>>,
 
     #[auto]
     pub created_at: Timestamp,
