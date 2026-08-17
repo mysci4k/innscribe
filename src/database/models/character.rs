@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::database::models::{
     AbilityScores, CharacterClass, CharacterFeat, CharacterLanguage, CombatProficiencies, Currency,
-    SavingThrowProficiencies, SkillProficiencies,
+    Proficiency, SavingThrowProficiencies, SkillProficiencies,
 };
 
 #[derive(Debug, Clone, Model)]
@@ -81,6 +81,8 @@ pub struct Character {
     pub feats: Deferred<Vec<CharacterFeat>>,
     #[has_many]
     pub languages: Deferred<Vec<CharacterLanguage>>,
+    #[has_many]
+    pub proficiencies: Deferred<Vec<Proficiency>>,
 
     #[auto]
     pub created_at: Timestamp,

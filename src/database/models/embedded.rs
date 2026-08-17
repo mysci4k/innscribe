@@ -76,3 +76,9 @@ pub enum FeatCategory {
     FightingStyle,
     EpicBoon,
 }
+
+#[derive(Debug, Clone, PartialEq, Embed)]
+pub enum ProficiencyType {
+    Tool,
+    Vehicle,
+}
