@@ -68,3 +68,11 @@ pub struct CombatProficiencies {
     pub heavy_armor: bool,
     pub shields: bool,
 }
+
+#[derive(Debug, Clone, PartialEq, Embed)]
+pub enum FeatCategory {
+    Origin,
+    General,
+    FightingStyle,
+    EpicBoon,
+}
