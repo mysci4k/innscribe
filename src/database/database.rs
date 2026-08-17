@@ -4,8 +4,9 @@ use std::{
     fs,
     path::{Path, PathBuf},
 };
-use toasty::{Db, models};
+use toasty::{Db, embed_migrations, migration::MigrationSet, models};
 use toasty_driver_turso::Turso;
+use tracing::info;
 
 async fn init_turso(db_path: &Path) -> Result<Db> {
     let driver = Turso::file(db_path);
@@ -14,7 +15,7 @@ async fn init_turso(db_path: &Path) -> Result<Db> {
         .build(driver)
         .await?;
 
-    // db.push_schema().await?;
+    apply_migrations(&db).await?;
 
     Ok(db)
 }
@@ -29,6 +30,17 @@ pub async fn init(db_path: PathBuf) -> Result<Db> {
     let db = init_turso(&db_path).await?;
 
     Ok(db)
+}
+
+static MIGRATIONS: MigrationSet = embed_migrations!();
+
+async fn apply_migrations(db: &Db) -> Result<()> {
+    let report = MIGRATIONS.apply(db).await?;
+
+    info!("Applied {} migrations", report.applied());
+    info!("Skipped {} migrations", report.skipped());
+
+    Ok(())
 }
 
 const PROJECT_QUALIFIER: &str = "app";
