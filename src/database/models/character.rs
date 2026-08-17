@@ -3,7 +3,7 @@ use toasty::{Deferred, Model};
 use uuid::Uuid;
 
 use crate::database::models::{
-    AbilityScores, CharacterClass, CharacterFeat, CombatProficiencies, Currency,
+    AbilityScores, CharacterClass, CharacterFeat, CharacterLanguage, CombatProficiencies, Currency,
     SavingThrowProficiencies, SkillProficiencies,
 };
 
@@ -79,6 +79,8 @@ pub struct Character {
     pub classes: Deferred<Vec<CharacterClass>>,
     #[has_many]
     pub feats: Deferred<Vec<CharacterFeat>>,
+    #[has_many]
+    pub languages: Deferred<Vec<CharacterLanguage>>,
 
     #[auto]
     pub created_at: Timestamp,
