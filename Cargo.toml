@@ -9,9 +9,9 @@ gpui_platform = { git = "https://github.com/zed-industries/zed", features = ["fo
 gpui_tokio = { git = "https://github.com/zed-industries/zed" }
 gpui-component = { git = "https://github.com/longbridge/gpui-component" }
 tokio = "1.53.0"
-toasty = { version = "0.9.0", features = ["turso", "jiff", "serde"] }
-toasty-driver-turso = "0.9.0"
-toasty-cli = "0.9.0"
+toasty = { version = "0.10.0", features = ["turso", "jiff", "serde"] }
+toasty-driver-turso = "0.10.0"
+toasty-cli = "0.10.0"
 uuid = { version = "1.24.0", features = ["v7"] }
 jiff = "0.2.34"
 timeago = "0.6.1"
