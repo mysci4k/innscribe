@@ -16,7 +16,7 @@ use crate::{app::MainApp, assets::AppAssets, database::Database};
 fn main() {
     logging::init();
 
-    let db_path = database::path();
+    let db_path = database::default_path();
 
     let app = gpui_platform::application().with_assets(AppAssets);
 
@@ -27,7 +27,7 @@ fn main() {
 
         cx.spawn(async move |cx| {
             let outcome: Result<()> = async {
-                let db = Tokio::spawn_result(cx, database::init(db_path)).await?;
+                let db = Tokio::spawn_result(cx, database::connect(db_path)).await?;
 
                 cx.update(|cx| cx.set_global(Database::from_db(db)));
 
