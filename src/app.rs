@@ -4,7 +4,7 @@ use gpui_component::{h_flex, scroll::ScrollableElement, v_flex};
 use crate::{
     components::{AppSidebar, AppTitleBar},
     state::{AppScreen, AppState},
-    views::{DashboardView, TestView},
+    views::{TestView, dashboard::DashboardView},
 };
 
 pub struct MainApp {
