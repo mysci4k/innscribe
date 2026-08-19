@@ -33,6 +33,8 @@ pub enum AppIcon {
     Map,
     Moon,
     PanelLeft,
+    Plus,
+    Search,
     Sun,
 }
 
@@ -43,6 +45,8 @@ impl IconNamed for AppIcon {
             AppIcon::Map => "icons/map.svg".into(),
             AppIcon::Moon => "icons/moon.svg".into(),
             AppIcon::PanelLeft => "icons/panel-left.svg".into(),
+            AppIcon::Plus => "icons/plus.svg".into(),
+            AppIcon::Search => "icons/search.svg".into(),
             AppIcon::Sun => "icons/sun.svg".into(),
         }
     }
