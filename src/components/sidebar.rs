@@ -33,6 +33,10 @@ impl AppSidebar {
         cx.notify();
     }
 
+    pub fn is_collapsed(&self) -> bool {
+        self.collapsed
+    }
+
     fn nav_item(
         &self,
         label: &'static str,
