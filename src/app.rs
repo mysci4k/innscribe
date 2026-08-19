@@ -20,7 +20,8 @@ impl MainApp {
         let app_state = cx.new(AppState::new);
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
-        let dashboard_view = cx.new(|cx| DashboardView::new(app_state.downgrade(), window, cx));
+        let dashboard_view =
+            cx.new(|cx| DashboardView::new(app_state.downgrade(), sidebar.downgrade(), window, cx));
         let test_view = cx.new(|cx| TestView::new(app_state.downgrade(), cx));
 
         Self {
