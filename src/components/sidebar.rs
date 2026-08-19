@@ -14,12 +14,9 @@ use crate::{
     state::{AppScreen, AppState},
 };
 
-const MOBILE_BREAKPOINT: f32 = 768.;
-
 pub struct AppSidebar {
     state: WeakEntity<AppState>,
     collapsed: bool,
-    mobile_open: bool,
 }
 
 impl AppSidebar {
@@ -27,19 +24,11 @@ impl AppSidebar {
         Self {
             state,
             collapsed: false,
-            mobile_open: false,
         }
     }
 
-    pub fn toggle(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let is_mobile = window.viewport_size().width < px(MOBILE_BREAKPOINT);
-        if is_mobile {
-            self.mobile_open = !self.mobile_open;
-            self.collapsed = false;
-        } else {
-            self.collapsed = !self.collapsed;
-            self.mobile_open = false;
-        }
+    pub fn toggle(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
+        self.collapsed = !self.collapsed;
 
         cx.notify();
     }
@@ -72,25 +61,13 @@ impl AppSidebar {
 impl Render for AppSidebar {
     fn render(
         &mut self,
-        window: &mut Window,
+        _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl gpui::prelude::IntoElement {
-        let viewport = window.viewport_size();
-        let is_mobile = viewport.width < px(MOBILE_BREAKPOINT);
-        let collapsed = if is_mobile {
-            !self.mobile_open
-        } else {
-            self.collapsed
-        };
-
         Sidebar::new("app-sidebar")
-            .collapsible(if is_mobile {
-                SidebarCollapsible::Offcanvas
-            } else {
-                SidebarCollapsible::Icon
-            })
-            .collapsed(collapsed)
-            .w(if is_mobile { px(180.) } else { px(240.) })
+            .collapsible(SidebarCollapsible::Icon)
+            .collapsed(self.collapsed)
+            .w(px(240.))
             .header(
                 SidebarHeader::new()
                     .child(
@@ -103,14 +80,14 @@ impl Render for AppSidebar {
                             .rounded(cx.theme().radius)
                             .bg(cx.theme().sidebar_primary)
                             .text_color(cx.theme().sidebar_primary_foreground)
-                            .when(collapsed, |this| {
+                            .when(self.collapsed, |this| {
                                 this.size_4()
                                     .bg(cx.theme().transparent)
                                     .text_color(cx.theme().foreground)
                             })
                             .child(Icon::new(AppIcon::Dices)),
                     )
-                    .when(!collapsed, |this| {
+                    .when(!self.collapsed, |this| {
                         this.child(v_flex().flex_1().overflow_hidden().child("InnScribe"))
                     }),
             )
