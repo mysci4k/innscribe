@@ -41,7 +41,7 @@ fn main() {
                 };
 
                 cx.open_window(window_options, |window, cx| {
-                    let view = cx.new(MainApp::new);
+                    let view = cx.new(|cx| MainApp::new(window, cx));
 
                     cx.new(|cx| Root::new(view, window, cx))
                 })
