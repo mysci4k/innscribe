@@ -1,6 +1,6 @@
 use gpui::{
     AppContext, Context, Entity, FontWeight, IntoElement, ParentElement, Render, Styled,
-    WeakEntity, Window, div, prelude::FluentBuilder,
+    WeakEntity, Window, div, prelude::FluentBuilder, px,
 };
 use gpui_component::{
     ActiveTheme, Icon,
@@ -14,6 +14,7 @@ use gpui_tokio::Tokio;
 
 use crate::{
     assets::AppIcon,
+    components::AppSidebar,
     database::{Database, models::Character},
     state::AppState,
     views::dashboard::character_card,
@@ -21,6 +22,7 @@ use crate::{
 
 pub struct DashboardView {
     app_state: WeakEntity<AppState>,
+    sidebar: WeakEntity<AppSidebar>,
     characters: Vec<Character>,
     search: Entity<InputState>,
     sort: Entity<SelectState<Vec<&'static str>>>,
@@ -29,6 +31,7 @@ pub struct DashboardView {
 impl DashboardView {
     pub fn new(
         app_state: WeakEntity<AppState>,
+        sidebar: WeakEntity<AppSidebar>,
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
@@ -44,6 +47,7 @@ impl DashboardView {
 
         let view = Self {
             app_state,
+            sidebar,
             characters: Vec::new(),
             search,
             sort,
@@ -77,10 +81,31 @@ impl DashboardView {
         })
         .detach();
     }
+
+    fn grid_columns(&self, window: &Window, cx: &Context<Self>) -> u16 {
+        const SIDEBAR_COLLAPSED_WIDTH: f32 = 48.;
+        const SIDEBAR_EXPANDED_WIDTH: f32 = 240.;
+        const CARD_SLOT: f32 = 400.;
+        const CONTENT_PAD: f32 = 32.;
+
+        let collapsed = self
+            .sidebar
+            .upgrade()
+            .is_some_and(|s| s.read(cx).is_collapsed());
+
+        let sidebar = if collapsed {
+            px(SIDEBAR_COLLAPSED_WIDTH)
+        } else {
+            px(SIDEBAR_EXPANDED_WIDTH)
+        };
+        let available = (window.viewport_size().width - sidebar - px(CONTENT_PAD)).max(px(0.));
+
+        ((available / px(CARD_SLOT)).floor() as u16).clamp(1, 4)
+    }
 }
 
 impl Render for DashboardView {
-    fn render(&mut self, _window: &mut gpui::Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut gpui::Window, cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .size_full()
             .gap_3()
@@ -132,12 +157,17 @@ impl Render for DashboardView {
             )
             .when(!self.characters.is_empty(), |this| {
                 this.child(
-                    h_flex().flex_wrap().gap_4().children(
-                        self.characters
-                            .clone()
-                            .into_iter()
-                            .map(|character| character_card(character, cx)),
-                    ),
+                    h_flex()
+                        .w_full()
+                        .grid()
+                        .grid_cols(self.grid_columns(window, cx))
+                        .gap_4()
+                        .children(
+                            self.characters
+                                .clone()
+                                .into_iter()
+                                .map(|character| character_card(character, cx)),
+                        ),
                 )
             })
     }
