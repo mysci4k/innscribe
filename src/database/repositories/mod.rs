@@ -1,3 +1,3 @@
 mod characters;
 
-pub use characters::Characters;
+pub use characters::{CharacterSort, Characters};
