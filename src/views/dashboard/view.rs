@@ -1,21 +1,22 @@
 use gpui::{
-    AppContext, Context, Entity, FontWeight, IntoElement, ParentElement, Render, Styled,
+    AppContext, Context, Entity, FontWeight, IntoElement, ParentElement, Render, Styled, Task,
     WeakEntity, Window, div, prelude::FluentBuilder, px,
 };
 use gpui_component::{
-    ActiveTheme, Icon,
+    ActiveTheme, Icon, IndexPath,
     button::{Button, ButtonVariants},
     h_flex,
-    input::{Input, InputState},
-    select::{Select, SelectState},
+    input::{Input, InputEvent, InputState},
+    select::{Select, SelectEvent, SelectState},
     v_flex,
 };
 use gpui_tokio::Tokio;
+use std::time::Duration;
 
 use crate::{
     assets::AppIcon,
     components::AppSidebar,
-    database::{Database, models::Character},
+    database::{Database, models::Character, repositories::CharacterSort},
     state::AppState,
     views::dashboard::character_card,
 };
@@ -26,6 +27,7 @@ pub struct DashboardView {
     characters: Vec<Character>,
     search: Entity<InputState>,
     sort: Entity<SelectState<Vec<&'static str>>>,
+    reload_task: Option<Task<()>>,
 }
 
 impl DashboardView {
@@ -38,12 +40,26 @@ impl DashboardView {
         let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search"));
         let sort = cx.new(|cx| {
             SelectState::new(
-                vec!["Name (A-Z)", "Name (Z-A)", "Newest", "Oldest"],
-                None,
+                vec!["Alphabetical", "Newest", "Oldest", "Updated"],
+                Some(IndexPath::default().row(3)),
                 window,
                 cx,
             )
         });
+
+        cx.subscribe(&search, |this, _, event, cx| {
+            if let InputEvent::Change = event {
+                this.reload(cx, Some(Duration::from_millis(250)));
+            }
+        })
+        .detach();
+
+        cx.subscribe(&sort, |this, _, event, cx| match event {
+            SelectEvent::Confirm(_) => {
+                this.reload(cx, None);
+            }
+        })
+        .detach();
 
         let view = Self {
             app_state,
@@ -51,11 +67,12 @@ impl DashboardView {
             characters: Vec::new(),
             search,
             sort,
+            reload_task: None,
         };
 
         cx.spawn(async move |this, cx| {
             this.update(cx, |this, cx| {
-                this.reload(cx);
+                this.reload(cx, None);
             })
             .ok()
         })
@@ -64,22 +81,46 @@ impl DashboardView {
         view
     }
 
-    fn reload(&mut self, cx: &mut Context<Self>) {
-        let repository = cx.global::<Database>().characters();
+    fn current_sort(&self, cx: &Context<Self>) -> CharacterSort {
+        match self.sort.read(cx).selected_value().copied() {
+            Some("Alphabetical") => CharacterSort::Alphabetical,
+            Some("Newest") => CharacterSort::Newest,
+            Some("Oldest") => CharacterSort::Oldest,
+            _ => CharacterSort::Updated,
+        }
+    }
 
-        cx.spawn(async move |this, cx| {
-            let result = Tokio::spawn_result(cx, async move { repository.list().await }).await;
+    fn reload(&mut self, cx: &mut Context<Self>, debounce: Option<Duration>) {
+        let repository = cx.global::<Database>().characters();
+        let search = self.search.read(cx).value().to_string();
+        let sort = self.current_sort(cx);
+
+        self.reload_task = Some(cx.spawn(async move |this, cx| {
+            if let Some(delay) = debounce {
+                cx.background_executor().timer(delay).await;
+            }
+
+            let result = Tokio::spawn_result(cx, async move {
+                let search = search.trim();
+                let search = if search.is_empty() {
+                    None
+                } else {
+                    Some(search)
+                };
+
+                repository.list(search, sort).await
+            })
+            .await;
 
             this.update(cx, |this, cx| {
-                match result {
-                    Ok(characters) => this.characters = characters,
-                    Err(_) => {}
+                if let Ok(characters) = result {
+                    this.characters = characters
                 }
 
                 cx.notify();
             })
-        })
-        .detach();
+            .ok();
+        }));
     }
 
     fn grid_columns(&self, window: &Window, cx: &Context<Self>) -> u16 {
