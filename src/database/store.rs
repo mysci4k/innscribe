@@ -1,5 +1,5 @@
 use anyhow::Result;
-use gpui::{AppContext, Context, Global, Task};
+use gpui::{AppContext, Global, Task};
 use gpui_tokio::Tokio;
 use toasty::Db;
 
