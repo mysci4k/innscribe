@@ -1,16 +1,10 @@
 use anyhow::Result;
 use toasty::Db;
 
-use crate::database::{TableStore, models::Character};
+use crate::database::models::Character;
 
 pub struct Characters {
     pub db: Db,
-}
-
-impl TableStore for Characters {
-    fn handle(&self) -> Db {
-        self.db.clone()
-    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -22,6 +16,10 @@ pub enum CharacterSort {
 }
 
 impl Characters {
+    fn db(&self) -> Db {
+        self.db.clone()
+    }
+
     pub async fn list(&self, search: Option<&str>, sort: CharacterSort) -> Result<Vec<Character>> {
         let filter = Character::fields()
             .deleted_at()
@@ -36,25 +34,25 @@ impl Characters {
             CharacterSort::Alphabetical => {
                 Character::filter(filter)
                     .order_by(Character::fields().name().asc())
-                    .exec(&mut self.handle())
+                    .exec(&mut self.db())
                     .await?
             }
             CharacterSort::Newest => {
                 Character::filter(filter)
                     .order_by(Character::fields().created_at().desc())
-                    .exec(&mut self.handle())
+                    .exec(&mut self.db())
                     .await?
             }
             CharacterSort::Oldest => {
                 Character::filter(filter)
                     .order_by(Character::fields().created_at().asc())
-                    .exec(&mut self.handle())
+                    .exec(&mut self.db())
                     .await?
             }
             CharacterSort::Updated => {
                 Character::filter(filter)
                     .order_by(Character::fields().updated_at().desc())
-                    .exec(&mut self.handle())
+                    .exec(&mut self.db())
                     .await?
             }
         };
