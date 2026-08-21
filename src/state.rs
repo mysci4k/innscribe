@@ -3,7 +3,6 @@ use gpui::Context;
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppScreen {
     Dashboard,
-    Test,
 }
 
 pub struct AppState {

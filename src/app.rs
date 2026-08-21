@@ -4,7 +4,7 @@ use gpui_component::{h_flex, scroll::ScrollableElement, v_flex};
 use crate::{
     components::{AppSidebar, AppTitleBar},
     state::{AppScreen, AppState},
-    views::{TestView, dashboard::DashboardView},
+    views::dashboard::DashboardView,
 };
 
 pub struct MainApp {
@@ -12,7 +12,6 @@ pub struct MainApp {
     sidebar: Entity<AppSidebar>,
     title_bar: Entity<AppTitleBar>,
     dashboard_view: Entity<DashboardView>,
-    test_view: Entity<TestView>,
 }
 
 impl MainApp {
@@ -22,21 +21,18 @@ impl MainApp {
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
         let dashboard_view =
             cx.new(|cx| DashboardView::new(app_state.downgrade(), sidebar.downgrade(), window, cx));
-        let test_view = cx.new(|cx| TestView::new(app_state.downgrade(), cx));
 
         Self {
             app_state,
             sidebar,
             title_bar,
             dashboard_view,
-            test_view,
         }
     }
 
     fn render_view(&self, cx: &mut Context<Self>) -> impl IntoElement {
         match self.app_state.read(cx).current_screen.clone() {
             AppScreen::Dashboard => self.dashboard_view.clone().into_any_element(),
-            AppScreen::Test => self.test_view.clone().into_any_element(),
         }
     }
 }

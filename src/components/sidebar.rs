@@ -96,11 +96,12 @@ impl Render for AppSidebar {
                     }),
             )
             .child(
-                SidebarGroup::new("General").child(
-                    SidebarMenu::new()
-                        .child(self.nav_item("Dashboard", AppScreen::Dashboard, AppIcon::Map, cx))
-                        .child(self.nav_item("Test", AppScreen::Test, AppIcon::Map, cx)),
-                ),
+                SidebarGroup::new("General").child(SidebarMenu::new().child(self.nav_item(
+                    "Dashboard",
+                    AppScreen::Dashboard,
+                    AppIcon::Map,
+                    cx,
+                ))),
             )
     }
 }
