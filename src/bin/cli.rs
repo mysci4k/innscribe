@@ -1,4 +1,4 @@
-#[path = "../database/mod.rs"]
+#[path = "../database/connection.rs"]
 mod database;
 
 use anyhow::Result;
