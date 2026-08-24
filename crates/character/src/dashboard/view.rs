@@ -15,7 +15,9 @@ use shared::{assets::AppIcon, sidebar::AppSidebar, state::AppState};
 use std::time::Duration;
 
 use crate::{
-    dashboard::components::character_card, models::Character, repositories::CharacterSort,
+    dashboard::{components::character_card, sort::SortOption},
+    models::Character,
+    repositories::CharacterSort,
     store::Database,
 };
 
@@ -24,7 +26,7 @@ pub struct DashboardView {
     sidebar: WeakEntity<AppSidebar>,
     characters: Vec<Character>,
     search: Entity<InputState>,
-    sort: Entity<SelectState<Vec<&'static str>>>,
+    sort: Entity<SelectState<Vec<SortOption>>>,
     reload_task: Option<Task<()>>,
 }
 
@@ -38,7 +40,7 @@ impl DashboardView {
         let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search"));
         let sort = cx.new(|cx| {
             SelectState::new(
-                vec!["Alphabetical", "Newest", "Oldest", "Updated"],
+                SortOption::ALL.to_vec(),
                 Some(IndexPath::default().row(3)),
                 window,
                 cx,
@@ -79,19 +81,15 @@ impl DashboardView {
         view
     }
 
-    fn current_sort(&self, cx: &Context<Self>) -> CharacterSort {
-        match self.sort.read(cx).selected_value().copied() {
-            Some("Alphabetical") => CharacterSort::Alphabetical,
-            Some("Newest") => CharacterSort::Newest,
-            Some("Oldest") => CharacterSort::Oldest,
-            _ => CharacterSort::Updated,
-        }
-    }
-
     fn reload(&mut self, cx: &mut Context<Self>, debounce: Option<Duration>) {
         let repository = cx.global::<Database>().characters();
         let search = self.search.read(cx).value().to_string();
-        let sort = self.current_sort(cx);
+        let sort = self
+            .sort
+            .read(cx)
+            .selected_value()
+            .copied()
+            .map_or(CharacterSort::Updated, CharacterSort::from);
 
         self.reload_task = Some(cx.spawn(async move |this, cx| {
             if let Some(delay) = debounce {
