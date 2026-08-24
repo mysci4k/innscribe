@@ -1,0 +1,11 @@
+[package]
+name = "persistence"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+toasty.workspace = true
+toasty-driver-turso.workspace = true
+directories.workspace = true
+tracing.workspace = true
+anyhow.workspace = true

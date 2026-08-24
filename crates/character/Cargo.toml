@@ -1,0 +1,16 @@
+[package]
+name = "character"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+persistence.workspace = true
+shared.workspace = true
+gpui.workspace = true
+gpui_tokio.workspace = true
+gpui-component.workspace = true
+toasty.workspace = true
+jiff.workspace = true
+uuid.workspace = true
+timeago.workspace = true
+anyhow.workspace = true

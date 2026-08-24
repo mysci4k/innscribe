@@ -1,0 +1,15 @@
+[package]
+name = "cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "innscribe-cli"
+path = "src/main.rs"
+
+[dependencies]
+persistence.workspace = true
+character.workspace = true
+toasty-cli.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
