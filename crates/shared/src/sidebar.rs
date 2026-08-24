@@ -48,8 +48,7 @@ impl AppSidebar {
         let is_active = self
             .state
             .upgrade()
-            .map(|s| s.read(cx).current_screen == target)
-            .unwrap_or(false);
+            .is_some_and(|s| *s.read(cx).screen() == target);
 
         SidebarMenuItem::new(label)
             .icon(icon)
