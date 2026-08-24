@@ -1,5 +1,5 @@
 use gpui::{
-    Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder, px,
+    Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder,
 };
 use gpui_component::{
     ActiveTheme, Icon,
@@ -71,7 +71,6 @@ impl Render for AppSidebar {
         Sidebar::new("app-sidebar")
             .collapsible(SidebarCollapsible::Icon)
             .collapsed(self.collapsed)
-            .w(px(240.))
             .header(
                 SidebarHeader::new()
                     .child(
