@@ -31,7 +31,7 @@ impl MainApp {
     }
 
     fn render_view(&self, cx: &mut Context<Self>) -> impl IntoElement {
-        match self.app_state.read(cx).current_screen.clone() {
+        match self.app_state.read(cx).screen().clone() {
             AppScreen::Dashboard => self.dashboard_view.clone().into_any_element(),
         }
     }
