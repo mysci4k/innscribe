@@ -6,7 +6,7 @@ pub enum AppScreen {
 }
 
 pub struct AppState {
-    pub current_screen: AppScreen,
+    current_screen: AppScreen,
 }
 
 impl AppState {
@@ -16,7 +16,15 @@ impl AppState {
         }
     }
 
+    pub fn screen(&self) -> &AppScreen {
+        &self.current_screen
+    }
+
     pub fn navigate(&mut self, screen: AppScreen, cx: &mut Context<Self>) {
+        if self.current_screen == screen {
+            return;
+        }
+
         self.current_screen = screen;
 
         cx.notify();
