@@ -19,6 +19,6 @@ impl Database {
     }
 
     pub fn characters(&self) -> Characters {
-        Characters { db: self.handle() }
+        Characters::new(self.handle())
     }
 }

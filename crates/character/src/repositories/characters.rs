@@ -4,7 +4,7 @@ use toasty::Db;
 use crate::models::Character;
 
 pub struct Characters {
-    pub db: Db,
+    db: Db,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -16,6 +16,10 @@ pub enum CharacterSort {
 }
 
 impl Characters {
+    pub fn new(db: Db) -> Self {
+        Self { db }
+    }
+
     fn db(&self) -> Db {
         self.db.clone()
     }
