@@ -15,7 +15,7 @@ use shared::{assets::AppIcon, sidebar::AppSidebar, state::AppState};
 use std::time::Duration;
 
 use crate::{
-    dashboard::{components::character_card, sort::SortOption},
+    dashboard::{components::CharacterCard, sort::SortOption},
     models::Character,
     repositories::CharacterSort,
     store::Database,
@@ -203,7 +203,7 @@ impl Render for DashboardView {
                             self.characters
                                 .clone()
                                 .into_iter()
-                                .map(|character| character_card(character, cx)),
+                                .map(|character| CharacterCard::new(character)),
                         ),
                 )
             })
