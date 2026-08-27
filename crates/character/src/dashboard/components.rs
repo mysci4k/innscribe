@@ -1,18 +1,39 @@
 use gpui::{App, IntoElement, ParentElement, RenderOnce, Styled, Window, div};
-use gpui_component::{ActiveTheme, avatar::Avatar, h_flex, tag::Tag, v_flex};
+use gpui_component::{
+    ActiveTheme, Icon, Sizable,
+    avatar::Avatar,
+    button::{Button, ButtonVariants},
+    h_flex,
+    menu::{DropdownMenu, PopupMenuItem},
+    tag::Tag,
+    v_flex,
+};
 use jiff::Timestamp;
-use std::time::Duration;
+use shared::assets::AppIcon;
+use std::{rc::Rc, time::Duration};
+use uuid::Uuid;
 
 use crate::models::Character;
+
+pub enum CharacterCardAction {
+    Archive,
+    Delete,
+}
+
+pub type CharacterCardActionHandler = Rc<dyn Fn(Uuid, CharacterCardAction, &mut Window, &mut App)>;
 
 #[derive(IntoElement)]
 pub struct CharacterCard {
     character: Character,
+    on_action: CharacterCardActionHandler,
 }
 
 impl CharacterCard {
-    pub fn new(character: Character) -> Self {
-        Self { character }
+    pub fn new(character: Character, on_action: CharacterCardActionHandler) -> Self {
+        Self {
+            character,
+            on_action,
+        }
     }
 }
 
@@ -41,25 +62,72 @@ impl RenderOnce for CharacterCard {
             .bg(cx.theme().background)
             .child(
                 h_flex()
-                    .items_center()
-                    .gap_3()
-                    .child(Avatar::new().name(self.character.name.clone()))
+                    .items_start()
+                    .justify_between()
                     .child(
-                        v_flex()
+                        h_flex()
+                            .items_center()
+                            .gap_3()
+                            .child(Avatar::new().name(self.character.name.clone()))
                             .child(
-                                div()
-                                    .font_weight(gpui::FontWeight::SEMIBOLD)
-                                    .child(self.character.name),
-                            )
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(cx.theme().muted_foreground)
-                                    .child(format!(
-                                        "{} · {}",
-                                        self.character.species, self.character.background
-                                    )),
+                                v_flex()
+                                    .child(
+                                        div()
+                                            .font_weight(gpui::FontWeight::SEMIBOLD)
+                                            .child(self.character.name),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(cx.theme().muted_foreground)
+                                            .child(format!(
+                                                "{} · {}",
+                                                self.character.species, self.character.background
+                                            )),
+                                    ),
                             ),
+                    )
+                    .child(
+                        Button::new(format!("character-card-menu-{}", self.character.id))
+                            .ghost()
+                            .small()
+                            .icon(Icon::new(AppIcon::EllipsisVertical))
+                            .dropdown_menu(move |menu, _window, cx| {
+                                menu.item(
+                                    PopupMenuItem::new("Archive")
+                                        .icon(Icon::new(AppIcon::Archive))
+                                        .on_click({
+                                            let on_action = self.on_action.clone();
+
+                                            move |_, window, cx| {
+                                                on_action(
+                                                    self.character.id,
+                                                    CharacterCardAction::Archive,
+                                                    window,
+                                                    cx,
+                                                )
+                                            }
+                                        }),
+                                )
+                                .item(
+                                    PopupMenuItem::new("Delete")
+                                        .icon(
+                                            Icon::new(AppIcon::Trash).text_color(cx.theme().danger),
+                                        )
+                                        .on_click({
+                                            let on_action = self.on_action.clone();
+
+                                            move |_, window, cx| {
+                                                on_action(
+                                                    self.character.id,
+                                                    CharacterCardAction::Delete,
+                                                    window,
+                                                    cx,
+                                                )
+                                            }
+                                        }),
+                                )
+                            }),
                     ),
             )
             .child(

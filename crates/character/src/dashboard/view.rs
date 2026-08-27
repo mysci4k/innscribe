@@ -12,10 +12,14 @@ use gpui_component::{
 };
 use gpui_tokio::Tokio;
 use shared::{assets::AppIcon, sidebar::AppSidebar, state::AppState};
-use std::time::Duration;
+use std::{rc::Rc, time::Duration};
+use uuid::Uuid;
 
 use crate::{
-    dashboard::{components::CharacterCard, sort::SortOption},
+    dashboard::{
+        components::{CharacterCard, CharacterCardAction, CharacterCardActionHandler},
+        sort::SortOption,
+    },
     models::Character,
     repositories::CharacterSort,
     store::Database,
@@ -119,6 +123,33 @@ impl DashboardView {
         }));
     }
 
+    fn handle_character_card_action(
+        &mut self,
+        id: Uuid,
+        action: CharacterCardAction,
+        cx: &mut Context<Self>,
+    ) {
+        let repository = cx.global::<Database>().characters();
+
+        cx.spawn(async move |this, cx| {
+            let result = Tokio::spawn_result(cx, async move {
+                match action {
+                    CharacterCardAction::Archive => repository.archive(id).await,
+                    CharacterCardAction::Delete => repository.delete(id).await,
+                }
+            })
+            .await;
+
+            this.update(cx, |this, cx| {
+                if result.is_ok() {
+                    this.reload(cx, None);
+                }
+            })
+            .ok();
+        })
+        .detach();
+    }
+
     fn grid_columns(&self, window: &Window, cx: &Context<Self>) -> u16 {
         const SIDEBAR_COLLAPSED_WIDTH: f32 = 48.;
         const SIDEBAR_EXPANDED_WIDTH: f32 = 240.;
@@ -143,6 +174,14 @@ impl DashboardView {
 
 impl Render for DashboardView {
     fn render(&mut self, window: &mut gpui::Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let view = cx.entity();
+        let on_character_card_action: CharacterCardActionHandler =
+            Rc::new(move |id, action, _window, cx| {
+                view.update(cx, |this, cx| {
+                    this.handle_character_card_action(id, action, cx)
+                });
+            });
+
         v_flex()
             .size_full()
             .gap_3()
@@ -199,12 +238,9 @@ impl Render for DashboardView {
                         .grid()
                         .grid_cols(self.grid_columns(window, cx))
                         .gap_4()
-                        .children(
-                            self.characters
-                                .clone()
-                                .into_iter()
-                                .map(|character| CharacterCard::new(character)),
-                        ),
+                        .children(self.characters.clone().into_iter().map(|character| {
+                            CharacterCard::new(character, on_character_card_action.clone())
+                        })),
                 )
             })
     }
