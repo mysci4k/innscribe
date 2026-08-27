@@ -29,25 +29,31 @@ impl AssetSource for AppAssets {
 
 #[derive(Clone, Copy)]
 pub enum AppIcon {
+    Archive,
     Dices,
+    EllipsisVertical,
     Map,
     Moon,
     PanelLeft,
     Plus,
     Search,
     Sun,
+    Trash,
 }
 
 impl IconNamed for AppIcon {
     fn path(self) -> SharedString {
         match self {
+            AppIcon::Archive => "icons/archive.svg".into(),
             AppIcon::Dices => "icons/dices.svg".into(),
+            AppIcon::EllipsisVertical => "icons/ellipsis-vertical.svg".into(),
             AppIcon::Map => "icons/map.svg".into(),
             AppIcon::Moon => "icons/moon.svg".into(),
             AppIcon::PanelLeft => "icons/panel-left.svg".into(),
             AppIcon::Plus => "icons/plus.svg".into(),
             AppIcon::Search => "icons/search.svg".into(),
             AppIcon::Sun => "icons/sun.svg".into(),
+            AppIcon::Trash => "icons/trash.svg".into(),
         }
     }
 }
