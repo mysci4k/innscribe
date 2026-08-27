@@ -1,5 +1,7 @@
 use anyhow::Result;
+use jiff::Timestamp;
 use toasty::Db;
+use uuid::Uuid;
 
 use crate::models::Character;
 
@@ -62,5 +64,23 @@ impl Characters {
         };
 
         Ok(result)
+    }
+
+    pub async fn archive(&self, id: Uuid) -> Result<()> {
+        Character::update_by_id(id)
+            .archived_at(Some(Timestamp::now()))
+            .exec(&mut self.db())
+            .await?;
+
+        Ok(())
+    }
+
+    pub async fn delete(&self, id: Uuid) -> Result<()> {
+        Character::update_by_id(id)
+            .deleted_at(Some(Timestamp::now()))
+            .exec(&mut self.db())
+            .await?;
+
+        Ok(())
     }
 }
