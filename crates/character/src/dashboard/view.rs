@@ -176,7 +176,7 @@ impl Render for DashboardView {
     fn render(&mut self, window: &mut gpui::Window, cx: &mut Context<Self>) -> impl IntoElement {
         let view = cx.entity();
         let on_character_card_action: CharacterCardActionHandler =
-            Rc::new(move |id, action, _window, cx| {
+            Rc::new(move |id, action, cx| {
                 view.update(cx, |this, cx| {
                     this.handle_character_card_action(id, action, cx)
                 });

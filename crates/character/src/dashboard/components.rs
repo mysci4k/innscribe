@@ -20,7 +20,7 @@ pub enum CharacterCardAction {
     Delete,
 }
 
-pub type CharacterCardActionHandler = Rc<dyn Fn(Uuid, CharacterCardAction, &mut Window, &mut App)>;
+pub type CharacterCardActionHandler = Rc<dyn Fn(Uuid, CharacterCardAction, &mut App)>;
 
 #[derive(IntoElement)]
 pub struct CharacterCard {
