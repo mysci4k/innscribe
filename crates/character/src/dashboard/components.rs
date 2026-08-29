@@ -37,6 +37,12 @@ impl CharacterCard {
         }
     }
 
+    fn time_ago(&self) -> String {
+        let secs =
+            (Timestamp::now().as_second() - self.character.updated_at.as_second()).max(0) as u64;
+        timeago::Formatter::new().convert(Duration::from_secs(secs))
+    }
+
     fn on_archive(
         character_id: Uuid,
         on_action: CharacterCardActionHandler,
@@ -76,16 +82,12 @@ impl CharacterCard {
 
 impl RenderOnce for CharacterCard {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
-        let secs =
-            (Timestamp::now().as_second() - self.character.updated_at.as_second()).max(0) as u64;
-        let duration = Duration::from_secs(secs);
-        let time_ago = timeago::Formatter::new().convert(duration);
-
         let campaign = self
             .character
             .campaign_name
             .as_deref()
             .unwrap_or("unassigned");
+        let time_ago = self.time_ago();
 
         div()
             .p_4()
