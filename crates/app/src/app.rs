@@ -1,6 +1,6 @@
 use character::dashboard::DashboardView;
 use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
-use gpui_component::{h_flex, scroll::ScrollableElement, v_flex};
+use gpui_component::{Root, h_flex, scroll::ScrollableElement, v_flex};
 use shared::{
     sidebar::AppSidebar,
     state::{AppScreen, AppState},
@@ -38,20 +38,26 @@ impl MainApp {
 }
 
 impl Render for MainApp {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        h_flex().size_full().child(self.sidebar.clone()).child(
-            v_flex()
-                .size_full()
-                .flex_1()
-                .child(self.title_bar.clone())
-                .child(
-                    div()
-                        .size_full()
-                        .px_4()
-                        .py_4()
-                        .overflow_y_scrollbar()
-                        .child(self.render_view(cx)),
-                ),
-        )
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let dialog_layer = Root::render_dialog_layer(window, cx);
+
+        h_flex()
+            .size_full()
+            .child(self.sidebar.clone())
+            .child(
+                v_flex()
+                    .size_full()
+                    .flex_1()
+                    .child(self.title_bar.clone())
+                    .child(
+                        div()
+                            .size_full()
+                            .px_4()
+                            .py_4()
+                            .overflow_y_scrollbar()
+                            .child(self.render_view(cx)),
+                    ),
+            )
+            .children(dialog_layer)
     }
 }
