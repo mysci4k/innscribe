@@ -1,8 +1,9 @@
-use gpui::{App, IntoElement, ParentElement, RenderOnce, Styled, Window, div};
+use gpui::{App, ClickEvent, IntoElement, ParentElement, RenderOnce, Styled, Window, div};
 use gpui_component::{
-    ActiveTheme, Icon, Sizable,
+    ActiveTheme, Icon, Sizable, WindowExt,
     avatar::Avatar,
-    button::{Button, ButtonVariants},
+    button::{Button, ButtonVariant, ButtonVariants},
+    dialog::DialogButtonProps,
     h_flex,
     menu::{DropdownMenu, PopupMenuItem},
     tag::Tag,
@@ -33,6 +34,42 @@ impl CharacterCard {
         Self {
             character,
             on_action,
+        }
+    }
+
+    fn on_archive(
+        character_id: Uuid,
+        on_action: CharacterCardActionHandler,
+    ) -> impl Fn(&ClickEvent, &mut Window, &mut App) + 'static {
+        move |_, _, cx| on_action(character_id, CharacterCardAction::Archive, cx)
+    }
+
+    fn on_delete(
+        character_id: Uuid,
+        on_action: CharacterCardActionHandler,
+    ) -> impl Fn(&ClickEvent, &mut Window, &mut App) + 'static {
+        move |_, window, cx| {
+            let on_action = on_action.clone();
+
+            window.open_alert_dialog(cx, move |alert, _, _| {
+                let on_action = on_action.clone();
+
+                alert
+                    .title("Delete character?")
+                    .description(
+                        "Character will be permanently removed.\nThis action cannot be undone.",
+                    )
+                    .button_props(
+                        DialogButtonProps::default()
+                            .ok_text("Delete")
+                            .ok_variant(ButtonVariant::Danger)
+                            .show_cancel(true),
+                    )
+                    .on_ok(move |_, _, cx| {
+                        on_action(character_id, CharacterCardAction::Delete, cx);
+                        true
+                    })
+            });
         }
     }
 }
@@ -96,36 +133,20 @@ impl RenderOnce for CharacterCard {
                                 menu.item(
                                     PopupMenuItem::new("Archive")
                                         .icon(Icon::new(AppIcon::Archive))
-                                        .on_click({
-                                            let on_action = self.on_action.clone();
-
-                                            move |_, window, cx| {
-                                                on_action(
-                                                    self.character.id,
-                                                    CharacterCardAction::Archive,
-                                                    window,
-                                                    cx,
-                                                )
-                                            }
-                                        }),
+                                        .on_click(Self::on_archive(
+                                            self.character.id,
+                                            self.on_action.clone(),
+                                        )),
                                 )
                                 .item(
                                     PopupMenuItem::new("Delete")
                                         .icon(
                                             Icon::new(AppIcon::Trash).text_color(cx.theme().danger),
                                         )
-                                        .on_click({
-                                            let on_action = self.on_action.clone();
-
-                                            move |_, window, cx| {
-                                                on_action(
-                                                    self.character.id,
-                                                    CharacterCardAction::Delete,
-                                                    window,
-                                                    cx,
-                                                )
-                                            }
-                                        }),
+                                        .on_click(Self::on_delete(
+                                            self.character.id,
+                                            self.on_action.clone(),
+                                        )),
                                 )
                             }),
                     ),
