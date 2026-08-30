@@ -83,6 +83,15 @@ impl Characters {
         Ok(())
     }
 
+    pub async fn restore(&self, id: Uuid) -> Result<()> {
+        Character::update_by_id(id)
+            .archived_at(None)
+            .exec(&mut self.db())
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn delete(&self, id: Uuid) -> Result<()> {
         Character::update_by_id(id)
             .deleted_at(Some(Timestamp::now()))
