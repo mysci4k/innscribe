@@ -30,6 +30,7 @@ impl AssetSource for AppAssets {
 #[derive(Clone, Copy)]
 pub enum AppIcon {
     Archive,
+    ArchiveRestore,
     Dices,
     EllipsisVertical,
     Map,
@@ -45,6 +46,7 @@ impl IconNamed for AppIcon {
     fn path(self) -> SharedString {
         match self {
             AppIcon::Archive => "icons/archive.svg".into(),
+            AppIcon::ArchiveRestore => "icons/archive-restore.svg".into(),
             AppIcon::Dices => "icons/dices.svg".into(),
             AppIcon::EllipsisVertical => "icons/ellipsis-vertical.svg".into(),
             AppIcon::Map => "icons/map.svg".into(),
