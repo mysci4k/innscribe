@@ -138,6 +138,7 @@ impl DashboardView {
             let result = Tokio::spawn_result(cx, async move {
                 match action {
                     CharacterCardAction::Archive => repository.archive(id).await,
+                    CharacterCardAction::Restore => repository.restore(id).await,
                     CharacterCardAction::Delete => repository.delete(id).await,
                 }
             })
