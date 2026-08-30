@@ -37,7 +37,7 @@ fn main() {
                     focus: true,
                     show: true,
                     app_id: Some("innscribe".into()),
-                    window_min_size: Some(size(px(1024.), px(768.))),
+                    window_min_size: Some(size(px(1280.), px(720.))),
                     ..Default::default()
                 };
 
