@@ -4,7 +4,7 @@ use gpui::{
 };
 use gpui_component::{
     ActiveTheme, Icon, IndexPath,
-    button::{Button, ButtonVariants},
+    button::{Button, ButtonVariants, Toggle, ToggleVariants},
     h_flex,
     input::{Input, InputEvent, InputState},
     select::{Select, SelectEvent, SelectState},
@@ -31,6 +31,7 @@ pub struct DashboardView {
     characters: Vec<Character>,
     search: Entity<InputState>,
     sort: Entity<SelectState<Vec<SortOption>>>,
+    show_archived: bool,
     reload_task: Option<Task<()>>,
 }
 
@@ -71,6 +72,7 @@ impl DashboardView {
             characters: Vec::new(),
             search,
             sort,
+            show_archived: false,
             reload_task: None,
         };
 
@@ -94,6 +96,7 @@ impl DashboardView {
             .selected_value()
             .copied()
             .map_or(CharacterSort::Updated, CharacterSort::from);
+        let archived_only = self.show_archived;
 
         self.reload_task = Some(cx.spawn(async move |this, cx| {
             if let Some(delay) = debounce {
@@ -108,7 +111,7 @@ impl DashboardView {
                     Some(search)
                 };
 
-                repository.list(search, sort).await
+                repository.list(search, sort, archived_only).await
             })
             .await;
 
@@ -182,6 +185,12 @@ impl Render for DashboardView {
                 });
             });
 
+        let character_count_label = if self.show_archived {
+            format!("{} archived", self.characters.len())
+        } else {
+            format!("{} characters", self.characters.len())
+        };
+
         v_flex()
             .size_full()
             .gap_3()
@@ -203,7 +212,7 @@ impl Render for DashboardView {
                                     .text_sm()
                                     .ml_1()
                                     .text_color(cx.theme().muted_foreground)
-                                    .child(format!("{} characters", self.characters.len())),
+                                    .child(character_count_label),
                             ),
                     )
                     .child(
@@ -211,6 +220,16 @@ impl Render for DashboardView {
                             .gap_3()
                             .items_center()
                             .flex_wrap()
+                            .child(
+                                Toggle::new("archived-character-toggle")
+                                    .outline()
+                                    .icon(Icon::new(AppIcon::Archive))
+                                    .checked(self.show_archived)
+                                    .on_click(cx.listener(|view, checked, _, cx| {
+                                        view.show_archived = *checked;
+                                        view.reload(cx, None);
+                                    })),
+                            )
                             .child(
                                 div().min_w_64().child(
                                     Input::new(&self.search)
