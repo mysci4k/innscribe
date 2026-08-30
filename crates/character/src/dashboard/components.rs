@@ -18,6 +18,7 @@ use crate::models::Character;
 
 pub enum CharacterCardAction {
     Archive,
+    Restore,
     Delete,
 }
 
@@ -48,6 +49,13 @@ impl CharacterCard {
         on_action: CharacterCardActionHandler,
     ) -> impl Fn(&ClickEvent, &mut Window, &mut App) + 'static {
         move |_, _, cx| on_action(character_id, CharacterCardAction::Archive, cx)
+    }
+
+    fn on_restore(
+        character_id: Uuid,
+        on_action: CharacterCardActionHandler,
+    ) -> impl Fn(&ClickEvent, &mut Window, &mut App) + 'static {
+        move |_, _, cx| on_action(character_id, CharacterCardAction::Restore, cx)
     }
 
     fn on_delete(
@@ -132,15 +140,27 @@ impl RenderOnce for CharacterCard {
                             .small()
                             .icon(Icon::new(AppIcon::EllipsisVertical))
                             .dropdown_menu(move |menu, _window, cx| {
-                                menu.item(
-                                    PopupMenuItem::new("Archive")
-                                        .icon(Icon::new(AppIcon::Archive))
-                                        .on_click(Self::on_archive(
-                                            self.character.id,
-                                            self.on_action.clone(),
-                                        )),
-                                )
-                                .item(
+                                let mut menu = if self.character.archived_at.is_some() {
+                                    menu.item(
+                                        PopupMenuItem::new("Resotre")
+                                            .icon(Icon::new(AppIcon::ArchiveRestore))
+                                            .on_click(Self::on_restore(
+                                                self.character.id,
+                                                self.on_action.clone(),
+                                            )),
+                                    )
+                                } else {
+                                    menu.item(
+                                        PopupMenuItem::new("Archive")
+                                            .icon(Icon::new(AppIcon::Archive))
+                                            .on_click(Self::on_archive(
+                                                self.character.id,
+                                                self.on_action.clone(),
+                                            )),
+                                    )
+                                };
+
+                                menu = menu.item(
                                     PopupMenuItem::new("Delete")
                                         .icon(
                                             Icon::new(AppIcon::Trash).text_color(cx.theme().danger),
@@ -149,7 +169,9 @@ impl RenderOnce for CharacterCard {
                                             self.character.id,
                                             self.on_action.clone(),
                                         )),
-                                )
+                                );
+
+                                menu
                             }),
                     ),
             )
