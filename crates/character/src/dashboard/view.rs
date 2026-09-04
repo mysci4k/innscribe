@@ -173,6 +173,20 @@ impl DashboardView {
 
         ((available / px(CARD_SLOT)).floor() as u16).clamp(1, 4)
     }
+
+    fn character_count_label(&self) -> String {
+        let count = self.characters.len();
+
+        if self.show_archived {
+            format!("{count} archived")
+        } else {
+            match count {
+                0 => "0 characters".to_string(),
+                1 => "1 character".to_string(),
+                n => format!("{n} characters"),
+            }
+        }
+    }
 }
 
 impl Render for DashboardView {
@@ -185,11 +199,7 @@ impl Render for DashboardView {
                 });
             });
 
-        let character_count_label = if self.show_archived {
-            format!("{} archived", self.characters.len())
-        } else {
-            format!("{} characters", self.characters.len())
-        };
+        let character_count_label = self.character_count_label();
 
         v_flex()
             .size_full()
