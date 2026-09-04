@@ -1,5 +1,5 @@
 use gpui_kit::{
-    Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window,
+    Context, FontWeight, IntoElement, ParentElement, Render, Styled, WeakEntity, Window,
     base::v_flex,
     component::{
         ActiveTheme, Icon,
@@ -88,7 +88,14 @@ impl Render for AppSidebar {
                             .child(Icon::new(AppIcon::Dices)),
                     )
                     .when(!self.collapsed, |this| {
-                        this.child(v_flex().flex_1().overflow_hidden().child("InnScribe"))
+                        this.child(
+                            v_flex()
+                                .flex_1()
+                                .overflow_hidden()
+                                .text_lg()
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child("InnScribe"),
+                        )
                     }),
             )
             .child(
