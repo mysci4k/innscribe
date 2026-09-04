@@ -1,4 +1,4 @@
-use gpui::Context;
+use gpui_kit::Context;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppScreen {

@@ -3,8 +3,11 @@ mod logging;
 
 use anyhow::Result;
 use character::store::Database;
-use gpui::{AppContext, WindowOptions, px, size};
-use gpui_component::{Root, TitleBar};
+use gpui_kit::{
+    AppContext, WindowOptions,
+    component::{Root, TitleBar},
+    px, size,
+};
 use gpui_tokio::Tokio;
 use shared::assets::AppAssets;
 
@@ -15,10 +18,10 @@ fn main() {
 
     let db_path = persistence::connection::default_path();
 
-    let app = gpui_platform::application().with_assets(AppAssets);
+    let app = gpui_kit::application().with_assets(AppAssets);
 
     app.run(move |cx| {
-        gpui_component::init(cx);
+        gpui_kit::init(cx);
 
         gpui_tokio::init(cx);
 

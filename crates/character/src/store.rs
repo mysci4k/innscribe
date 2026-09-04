@@ -1,4 +1,4 @@
-use gpui::Global;
+use gpui_kit::Global;
 use toasty::Db;
 
 use crate::repositories::Characters;

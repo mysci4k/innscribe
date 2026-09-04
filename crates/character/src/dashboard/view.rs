@@ -1,14 +1,20 @@
-use gpui::{
+use gpui_kit::{
     AppContext, Context, Entity, FontWeight, IntoElement, ParentElement, Render, Styled, Task,
-    WeakEntity, Window, div, prelude::FluentBuilder, px,
-};
-use gpui_component::{
-    ActiveTheme, Icon, IndexPath,
-    button::{Button, ButtonVariants, Toggle, ToggleVariants},
-    h_flex,
-    input::{Input, InputEvent, InputState},
-    select::{Select, SelectEvent, SelectState},
-    v_flex,
+    WeakEntity, Window,
+    base::{
+        IndexPath, h_flex,
+        input::{InputEvent, InputState},
+        v_flex,
+    },
+    component::{
+        ActiveTheme, Icon,
+        button::{Button, ButtonVariants, Toggle, ToggleVariants},
+        input::Input,
+        select::{Select, SelectEvent, SelectState},
+    },
+    div,
+    prelude::FluentBuilder,
+    px,
 };
 use gpui_tokio::Tokio;
 use shared::{assets::AppIcon, sidebar::AppSidebar, state::AppState};
@@ -177,7 +183,7 @@ impl DashboardView {
 }
 
 impl Render for DashboardView {
-    fn render(&mut self, window: &mut gpui::Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let view = cx.entity();
         let on_character_card_action: CharacterCardActionHandler =
             Rc::new(move |id, action, cx| {

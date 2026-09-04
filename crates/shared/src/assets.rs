@@ -1,6 +1,5 @@
-use anyhow::anyhow;
-use gpui::{AssetSource, Result, SharedString};
-use gpui_component::IconNamed;
+use anyhow::{Result, anyhow};
+use gpui_kit::{AssetSource, SharedString, component::IconNamed};
 use rust_embed::RustEmbed;
 use std::borrow::Cow;
 

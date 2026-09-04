@@ -1,6 +1,10 @@
 use character::dashboard::DashboardView;
-use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
-use gpui_component::{Root, h_flex, scroll::ScrollableElement, v_flex};
+use gpui_kit::{
+    AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window,
+    base::{h_flex, v_flex},
+    component::{Root, scroll::ScrollableElement},
+    div,
+};
 use shared::{
     sidebar::AppSidebar,
     state::{AppScreen, AppState},

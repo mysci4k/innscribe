@@ -1,8 +1,10 @@
-use gpui::{Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window};
-use gpui_component::{
-    ActiveTheme, Sizable, Theme, ThemeMode, TitleBar,
-    button::{Button, ButtonVariants},
-    h_flex,
+use gpui_kit::{
+    Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window,
+    base::h_flex,
+    component::{
+        ActiveTheme, Sizable, Theme, ThemeMode, TitleBar,
+        button::{Button, ButtonVariants},
+    },
 };
 
 use crate::{assets::AppIcon, sidebar::AppSidebar};

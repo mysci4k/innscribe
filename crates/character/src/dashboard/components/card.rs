@@ -1,13 +1,15 @@
-use gpui::{App, ClickEvent, IntoElement, ParentElement, RenderOnce, Styled, Window, div};
-use gpui_component::{
-    ActiveTheme, Icon, Sizable, WindowExt,
-    avatar::Avatar,
-    button::{Button, ButtonVariant, ButtonVariants},
-    dialog::DialogButtonProps,
-    h_flex,
-    menu::{DropdownMenu, PopupMenuItem},
-    tag::Tag,
-    v_flex,
+use gpui_kit::{
+    App, ClickEvent, FontWeight, IntoElement, ParentElement, RenderOnce, Styled, Window,
+    base::{h_flex, v_flex},
+    component::{
+        ActiveTheme, Icon, Sizable, WindowExt,
+        avatar::Avatar,
+        button::{Button, ButtonVariant, ButtonVariants},
+        dialog::DialogButtonProps,
+        menu::{DropdownMenu, PopupMenuItem},
+        tag::Tag,
+    },
+    div,
 };
 use jiff::Timestamp;
 use shared::assets::AppIcon;
@@ -120,7 +122,7 @@ impl RenderOnce for CharacterCard {
                                 v_flex()
                                     .child(
                                         div()
-                                            .font_weight(gpui::FontWeight::SEMIBOLD)
+                                            .font_weight(FontWeight::SEMIBOLD)
                                             .child(self.character.name),
                                     )
                                     .child(

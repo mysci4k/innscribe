@@ -1,5 +1,4 @@
-use gpui::SharedString;
-use gpui_component::select::SelectItem;
+use gpui_kit::{SharedString, component::select::SelectItem};
 
 use crate::repositories::CharacterSort;
 

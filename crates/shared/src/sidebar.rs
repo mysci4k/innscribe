@@ -1,12 +1,14 @@
-use gpui::{
-    Context, ParentElement, Render, Styled, WeakEntity, Window, div, prelude::FluentBuilder,
-};
-use gpui_component::{
-    ActiveTheme, Icon,
-    sidebar::{
-        Sidebar, SidebarCollapsible, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem,
+use gpui_kit::{
+    Context, IntoElement, ParentElement, Render, Styled, WeakEntity, Window,
+    base::v_flex,
+    component::{
+        ActiveTheme, Icon,
+        sidebar::{
+            Sidebar, SidebarCollapsible, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem,
+        },
     },
-    v_flex,
+    div,
+    prelude::FluentBuilder,
 };
 
 use crate::{
@@ -62,11 +64,7 @@ impl AppSidebar {
 }
 
 impl Render for AppSidebar {
-    fn render(
-        &mut self,
-        _window: &mut Window,
-        cx: &mut Context<Self>,
-    ) -> impl gpui::prelude::IntoElement {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         Sidebar::new("app-sidebar")
             .collapsible(SidebarCollapsible::Icon)
             .collapsed(self.collapsed)
