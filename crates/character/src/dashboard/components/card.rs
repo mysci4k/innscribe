@@ -144,7 +144,7 @@ impl RenderOnce for CharacterCard {
                             .dropdown_menu(move |menu, _window, cx| {
                                 let mut menu = if self.character.archived_at.is_some() {
                                     menu.item(
-                                        PopupMenuItem::new("Resotre")
+                                        PopupMenuItem::new("Restore")
                                             .icon(Icon::new(AppIcon::ArchiveRestore))
                                             .on_click(Self::on_restore(
                                                 self.character.id,
