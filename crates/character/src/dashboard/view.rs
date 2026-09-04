@@ -8,7 +8,7 @@ use gpui_kit::{
     },
     component::{
         ActiveTheme, Icon,
-        button::{Button, ButtonVariants, Toggle, ToggleVariants},
+        button::{Button, Toggle, ToggleVariants},
         input::Input,
         select::{Select, SelectEvent, SelectState},
     },
@@ -252,8 +252,7 @@ impl Render for DashboardView {
                             .child(
                                 Button::new("new-character")
                                     .icon(Icon::new(AppIcon::Plus))
-                                    .label("New character")
-                                    .primary(),
+                                    .label("New character"),
                             ),
                     ),
             )
