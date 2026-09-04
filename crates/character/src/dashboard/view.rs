@@ -2,7 +2,7 @@ use gpui_kit::{
     AppContext, Context, Entity, FontWeight, IntoElement, ParentElement, Render, Styled, Task,
     WeakEntity, Window,
     base::{
-        IndexPath, h_flex,
+        h_flex,
         input::{InputEvent, InputState},
         v_flex,
     },
@@ -48,15 +48,8 @@ impl DashboardView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
-        let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search"));
-        let sort = cx.new(|cx| {
-            SelectState::new(
-                SortOption::ALL.to_vec(),
-                Some(IndexPath::default().row(3)),
-                window,
-                cx,
-            )
-        });
+        let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search characters"));
+        let sort = cx.new(|cx| SelectState::new(SortOption::ALL.to_vec(), None, window, cx));
 
         cx.subscribe(&search, |this, _, event, cx| {
             if let InputEvent::Change = event {
@@ -248,7 +241,7 @@ impl Render for DashboardView {
                             .child(
                                 div()
                                     .min_w_32()
-                                    .child(Select::new(&self.sort).placeholder("Sort by..")),
+                                    .child(Select::new(&self.sort).placeholder("Sort")),
                             )
                             .child(
                                 Button::new("new-character")
