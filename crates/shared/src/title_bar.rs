@@ -24,40 +24,40 @@ impl Render for AppTitleBar {
         let sidebar = self.sidebar.clone();
         let is_dark = cx.theme().is_dark();
 
-        TitleBar::new()
-            .bg(cx.theme().sidebar_primary_foreground)
-            .child(
-                h_flex()
-                    .items_center()
-                    .justify_between()
-                    .size_full()
-                    .pr_2()
-                    .child(
-                        Button::new("toggle-sidebar")
-                            .small()
-                            .ghost()
-                            .icon(AppIcon::PanelLeft)
-                            .on_click(move |_, window, cx| {
-                                if let Some(sidebar) = sidebar.upgrade() {
-                                    sidebar.update(cx, |s, cx| s.toggle(window, cx))
-                                }
-                            }),
-                    )
-                    .child(
-                        Button::new("toggle-theme")
-                            .small()
-                            .ghost()
-                            .icon(if is_dark { AppIcon::Sun } else { AppIcon::Moon })
-                            .on_click(move |_, window, cx| {
-                                let next_mode = if cx.theme().is_dark() {
-                                    ThemeMode::Light
-                                } else {
-                                    ThemeMode::Dark
-                                };
+        TitleBar::new().bg(cx.theme().sidebar).child(
+            h_flex()
+                .items_center()
+                .justify_between()
+                .size_full()
+                .pr_2()
+                .child(
+                    Button::new("toggle-sidebar")
+                        .small()
+                        .ghost()
+                        .icon(AppIcon::PanelLeft)
+                        .tooltip("Toggle sidebar")
+                        .on_click(move |_, window, cx| {
+                            if let Some(sidebar) = sidebar.upgrade() {
+                                sidebar.update(cx, |s, cx| s.toggle(window, cx))
+                            }
+                        }),
+                )
+                .child(
+                    Button::new("toggle-theme")
+                        .small()
+                        .ghost()
+                        .icon(if is_dark { AppIcon::Sun } else { AppIcon::Moon })
+                        .tooltip("Change theme")
+                        .on_click(move |_, window, cx| {
+                            let next_mode = if cx.theme().is_dark() {
+                                ThemeMode::Light
+                            } else {
+                                ThemeMode::Dark
+                            };
 
-                                Theme::change(next_mode, Some(window), cx);
-                            }),
-                    ),
-            )
+                            Theme::change(next_mode, Some(window), cx);
+                        }),
+                ),
+        )
     }
 }
