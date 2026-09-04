@@ -1,0 +1,12 @@
+[package]
+name = "gpui-tokio"
+description = "Tokio bridge for GPUI (derived from Zed Industries gpui_tokio)"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0"
+
+[dependencies]
+# gpui-util.workspace = true
+gpui-kit.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
