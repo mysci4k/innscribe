@@ -47,19 +47,20 @@ impl Render for MainApp {
 
         h_flex()
             .size_full()
+            .items_stretch()
             .child(self.sidebar.clone())
             .child(
                 v_flex()
-                    .size_full()
                     .flex_1()
+                    .min_w_0()
+                    .min_h_0()
                     .child(self.title_bar.clone())
                     .child(
                         div()
                             .size_full()
-                            .px_4()
-                            .py_4()
+                            .min_h_0()
                             .overflow_y_scrollbar()
-                            .child(self.render_view(cx)),
+                            .child(div().w_full().p_4().child(self.render_view(cx))),
                     ),
             )
             .children(dialog_layer)
