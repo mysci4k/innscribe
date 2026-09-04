@@ -230,8 +230,9 @@ impl Render for DashboardView {
                             .child(
                                 Toggle::new("archived-character-toggle")
                                     .outline()
-                                    .icon(Icon::new(AppIcon::Archive))
                                     .checked(self.show_archived)
+                                    .icon(Icon::new(AppIcon::Archive))
+                                    .tooltip("Show archived characters")
                                     .on_click(cx.listener(|view, checked, _, cx| {
                                         view.show_archived = *checked;
                                         view.reload(cx, None);
