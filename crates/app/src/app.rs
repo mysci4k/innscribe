@@ -24,7 +24,7 @@ impl MainApp {
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
         let dashboard_view =
-            cx.new(|cx| DashboardView::new(app_state.downgrade(), sidebar.downgrade(), window, cx));
+            cx.new(|cx| DashboardView::new(app_state.downgrade(), sidebar.clone(), window, cx));
 
         Self {
             app_state,

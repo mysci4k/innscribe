@@ -17,7 +17,11 @@ use gpui_kit::{
     px,
 };
 use gpui_tokio::Tokio;
-use shared::{assets::AppIcon, sidebar::AppSidebar, state::AppState};
+use shared::{
+    assets::AppIcon,
+    sidebar::{AppSidebar, AppSidebarEvent},
+    state::AppState,
+};
 use std::{rc::Rc, time::Duration};
 use uuid::Uuid;
 
@@ -33,7 +37,7 @@ use crate::{
 
 pub struct DashboardView {
     app_state: WeakEntity<AppState>,
-    sidebar: WeakEntity<AppSidebar>,
+    sidebar_collapsed: bool,
     characters: Vec<Character>,
     search: Entity<InputState>,
     sort: Entity<SelectState<Vec<SortOption>>>,
@@ -42,9 +46,14 @@ pub struct DashboardView {
 }
 
 impl DashboardView {
+    const CARD_MIN_REMS: f32 = 24.0;
+    const GRID_GAP_REMS: f32 = 1.0;
+    const CONTENT_PAD_REMS: f32 = 2.0;
+    const MAX_COLUMNS: u16 = 4;
+
     pub fn new(
         app_state: WeakEntity<AppState>,
-        sidebar: WeakEntity<AppSidebar>,
+        sidebar: Entity<AppSidebar>,
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
@@ -65,9 +74,18 @@ impl DashboardView {
         })
         .detach();
 
+        let sidebar_collapsed = sidebar.read(cx).is_collapsed();
+        cx.subscribe(&sidebar, |this, _, event: &AppSidebarEvent, cx| {
+            let AppSidebarEvent::CollapsedChanged(collapsed) = event;
+            this.sidebar_collapsed = *collapsed;
+
+            cx.notify();
+        })
+        .detach();
+
         let view = Self {
             app_state,
-            sidebar,
+            sidebar_collapsed,
             characters: Vec::new(),
             search,
             sort,
@@ -153,25 +171,37 @@ impl DashboardView {
         .detach();
     }
 
-    fn grid_columns(&self, window: &Window, cx: &Context<Self>) -> u16 {
-        const SIDEBAR_COLLAPSED_WIDTH: f32 = 48.;
-        const SIDEBAR_EXPANDED_WIDTH: f32 = 240.;
-        const CARD_SLOT: f32 = 400.;
-        const CONTENT_PAD: f32 = 32.;
+    fn columns_for_width(
+        available_rems: f32,
+        card_min_rems: f32,
+        gap_rems: f32,
+        max_columns: u16,
+    ) -> u16 {
+        if available_rems <= 0.0 || card_min_rems <= 0.0 {
+            return 1;
+        }
+        let slot = card_min_rems + gap_rems;
+        (((available_rems + gap_rems) / slot).floor() as u16).clamp(1, max_columns)
+    }
 
-        let collapsed = self
-            .sidebar
-            .upgrade()
-            .is_some_and(|s| s.read(cx).is_collapsed());
-
-        let sidebar = if collapsed {
-            px(SIDEBAR_COLLAPSED_WIDTH)
+    fn grid_columns(&self, window: &Window) -> u16 {
+        let rem = window.rem_size();
+        let sidebar_rems = if self.sidebar_collapsed {
+            AppSidebar::COLLAPSED_WIDTH_REMS
         } else {
-            px(SIDEBAR_EXPANDED_WIDTH)
+            AppSidebar::EXPANDED_WIDTH_REMS
         };
-        let available = (window.viewport_size().width - sidebar - px(CONTENT_PAD)).max(px(0.));
+        let available_px =
+            (window.viewport_size().width - sidebar_rems * rem - Self::CONTENT_PAD_REMS * rem)
+                .max(px(0.));
+        let available_rems = available_px / rem;
 
-        ((available / px(CARD_SLOT)).floor() as u16).clamp(1, 4)
+        Self::columns_for_width(
+            available_rems,
+            Self::CARD_MIN_REMS,
+            Self::GRID_GAP_REMS,
+            Self::MAX_COLUMNS,
+        )
     }
 
     fn character_count_label(&self) -> String {
@@ -265,7 +295,7 @@ impl Render for DashboardView {
                     h_flex()
                         .w_full()
                         .grid()
-                        .grid_cols(self.grid_columns(window, cx))
+                        .grid_cols(self.grid_columns(window))
                         .gap_4()
                         .children(self.characters.clone().into_iter().map(|character| {
                             CharacterCard::new(character, on_character_card_action.clone())

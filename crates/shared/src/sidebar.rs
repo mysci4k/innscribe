@@ -1,5 +1,6 @@
 use gpui_kit::{
-    Context, FontWeight, IntoElement, ParentElement, Render, Styled, WeakEntity, Window,
+    Context, EventEmitter, FontWeight, IntoElement, ParentElement, Render, Styled, WeakEntity,
+    Window,
     base::v_flex,
     component::{
         ActiveTheme, Icon,
@@ -21,7 +22,17 @@ pub struct AppSidebar {
     collapsed: bool,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum AppSidebarEvent {
+    CollapsedChanged(bool),
+}
+
+impl EventEmitter<AppSidebarEvent> for AppSidebar {}
+
 impl AppSidebar {
+    pub const COLLAPSED_WIDTH_REMS: f32 = 3.0;
+    pub const EXPANDED_WIDTH_REMS: f32 = 15.0;
+
     pub fn new(state: WeakEntity<AppState>, _cx: &mut Context<Self>) -> Self {
         Self {
             state,
@@ -32,6 +43,7 @@ impl AppSidebar {
     pub fn toggle(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
         self.collapsed = !self.collapsed;
 
+        cx.emit(AppSidebarEvent::CollapsedChanged(self.collapsed));
         cx.notify();
     }
 
