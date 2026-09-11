@@ -19,7 +19,6 @@ character = { path = "crates/character" }
 gpui-tokio = { path = "crates/gpui-tokio" }
 persistence = { path = "crates/persistence" }
 shared = { path = "crates/shared" }
-# gpui-util = { package = "gpui-pre-util", version = "0.3.3" }
 gpui-kit = { version = "0.6.0", default-features = false, features = ["component"] }
 tokio = "1.53.0"
 toasty = { version = "0.10.0", features = ["turso", "jiff", "serde", "migration"] }
