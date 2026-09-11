@@ -6,6 +6,7 @@ members = [
     "crates/cli",
     "crates/gpui-tokio",
     "crates/persistence",
+    "crates/settings",
     "crates/shared"
 ]
 
@@ -18,6 +19,7 @@ app = { path = "crates/app" }
 character = { path = "crates/character" }
 gpui-tokio = { path = "crates/gpui-tokio" }
 persistence = { path = "crates/persistence" }
+settings = { path = "crates/settings" }
 shared = { path = "crates/shared" }
 gpui-kit = { version = "0.6.0", default-features = false, features = ["component"] }
 tokio = "1.53.0"

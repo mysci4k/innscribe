@@ -1,0 +1,6 @@
+[package]
+name = "settings"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
