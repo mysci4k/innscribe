@@ -7748,6 +7748,7 @@ dependencies = [
  "gpui-kit",
  "rust-embed",
  "settings",
+ "tracing",
 ]
 
 [[package]]
