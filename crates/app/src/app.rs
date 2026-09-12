@@ -23,7 +23,7 @@ impl MainApp {
     pub fn new(window: &mut Window, cx: &mut Context<Self>, settings: AppSettings) -> Self {
         let app_state = cx.new(|_| AppState::new(settings));
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
-        let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
+        let title_bar = cx.new(|_| AppTitleBar::new(app_state.downgrade(), sidebar.downgrade()));
         let dashboard_view =
             cx.new(|cx| DashboardView::new(app_state.downgrade(), sidebar.clone(), window, cx));
 
