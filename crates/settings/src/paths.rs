@@ -8,6 +8,8 @@ const PROJECT_APPLICATION: &str = "innscribe";
 const DATABASE_SUBDIR: &str = "database";
 const DATABASE_FILENAME: &str = "innscribe.db";
 
+const SETTINGS_FILENAME: &str = "settings.toml";
+
 fn project_dirs() -> ProjectDirs {
     ProjectDirs::from(PROJECT_QUALIFIER, PROJECT_ORGANIZATION, PROJECT_APPLICATION)
         .expect("Failed to get project directories")
@@ -19,4 +21,8 @@ pub fn data_dir() -> PathBuf {
 
 pub fn database_path() -> PathBuf {
     data_dir().join(DATABASE_SUBDIR).join(DATABASE_FILENAME)
+}
+
+pub fn settings_path() -> PathBuf {
+    data_dir().join(SETTINGS_FILENAME)
 }
