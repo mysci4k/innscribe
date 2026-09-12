@@ -23,6 +23,8 @@ fn main() {
     app.run(move |cx| {
         gpui_kit::init(cx);
 
+        let app_settings = settings::model::AppSettings::load_or_init();
+
         gpui_tokio::init(cx);
 
         cx.spawn(async move |cx| {
@@ -45,7 +47,7 @@ fn main() {
                 };
 
                 cx.open_window(window_options, |window, cx| {
-                    let view = cx.new(|cx| MainApp::new(window, cx));
+                    let view = cx.new(|cx| MainApp::new(window, cx, app_settings));
 
                     cx.new(|cx| Root::new(view, window, cx))
                 })

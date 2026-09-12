@@ -5,6 +5,7 @@ use gpui_kit::{
     component::{Root, scroll::ScrollableElement},
     div,
 };
+use settings::model::AppSettings;
 use shared::{
     sidebar::AppSidebar,
     state::{AppScreen, AppState},
@@ -19,8 +20,8 @@ pub struct MainApp {
 }
 
 impl MainApp {
-    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let app_state = cx.new(AppState::new);
+    pub fn new(window: &mut Window, cx: &mut Context<Self>, settings: AppSettings) -> Self {
+        let app_state = cx.new(|_| AppState::new(settings));
         let sidebar = cx.new(|cx| AppSidebar::new(app_state.downgrade(), cx));
         let title_bar = cx.new(|_| AppTitleBar::new(sidebar.downgrade()));
         let dashboard_view =
