@@ -5,7 +5,7 @@ use anyhow::Result;
 use character::store::Database;
 use gpui_kit::{
     AppContext, WindowOptions,
-    component::{Root, TitleBar},
+    component::{Root, Theme, ThemeMode, TitleBar},
     px, size,
 };
 use gpui_tokio::Tokio;
@@ -24,6 +24,12 @@ fn main() {
         gpui_kit::init(cx);
 
         let app_settings = settings::model::AppSettings::load_or_init();
+        let persisted_mode = if app_settings.theme().is_dark() {
+            ThemeMode::Dark
+        } else {
+            ThemeMode::Light
+        };
+        Theme::change(persisted_mode, None, cx);
 
         gpui_tokio::init(cx);
 
