@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+settings.workspace = true
 gpui-kit.workspace = true
 rust-embed.workspace = true
 anyhow.workspace = true

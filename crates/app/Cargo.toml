@@ -10,6 +10,7 @@ path = "src/main.rs"
 [dependencies]
 character.workspace = true
 persistence.workspace = true
+settings.workspace = true
 shared.workspace = true
 gpui-kit.workspace = true
 gpui-tokio.workspace = true
