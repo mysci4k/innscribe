@@ -1,4 +1,5 @@
 use gpui_kit::Context;
+use settings::model::AppSettings;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppScreen {
@@ -7,12 +8,14 @@ pub enum AppScreen {
 
 pub struct AppState {
     current_screen: AppScreen,
+    settings: AppSettings,
 }
 
 impl AppState {
-    pub fn new(_cx: &mut Context<Self>) -> Self {
+    pub fn new(settings: AppSettings) -> Self {
         Self {
             current_screen: AppScreen::Dashboard,
+            settings,
         }
     }
 
