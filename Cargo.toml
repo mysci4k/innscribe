@@ -10,4 +10,6 @@ publish = false
 
 [workspace.dependencies]
 gpui-kit = { version = "0.6.4", default-features = false, features = ["component"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 anyhow = "1.0.104"
