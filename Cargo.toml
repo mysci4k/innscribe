@@ -1,6 +1,10 @@
-[package]
-name = "innscribe"
+[workspace]
+resolver = "3"
+members = ["crates/app"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
 
-[dependencies]
+[workspace.dependencies]
