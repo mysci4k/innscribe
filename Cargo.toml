@@ -10,3 +10,4 @@ publish = false
 
 [workspace.dependencies]
 gpui-kit = { version = "0.6.4", default-features = false, features = ["component"] }
+anyhow = "1.0.104"
