@@ -6,4 +6,5 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+gpui-kit.workspace = true
 rust-embed.workspace = true
