@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/app"]
+members = ["crates/app", "crates/shared"]
 
 [workspace.package]
 version = "0.1.0"
@@ -9,6 +9,7 @@ license = "MIT"
 publish = false
 
 [workspace.dependencies]
+shared = { path = "crates/shared" }
 gpui-kit = { version = "0.6.4", default-features = false, features = ["component"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
