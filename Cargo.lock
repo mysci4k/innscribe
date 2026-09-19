@@ -6149,6 +6149,9 @@ dependencies = [
 [[package]]
 name = "shared"
 version = "0.1.0"
+dependencies = [
+ "rust-embed",
+]
 
 [[package]]
 name = "shellexpand"
