@@ -1,10 +1,13 @@
 mod app;
+mod logging;
 
 use gpui_kit::{AppContext, WindowOptions, component::Root};
 
 use crate::app::MainApp;
 
 fn main() {
+    logging::init();
+
     let app = gpui_kit::application();
 
     app.run(move |cx| {
