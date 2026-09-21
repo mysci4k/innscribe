@@ -5,7 +5,7 @@ use gpui_kit::{
     div,
 };
 use shared::{
-    components::AppSidebar,
+    components::{AppSidebar, AppStatusBar},
     state::{AppState, AppView},
 };
 use view::character::list::CharacterListView;
@@ -38,17 +38,23 @@ impl MainApp {
 
 impl Render for MainApp {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        h_flex()
+        v_flex()
             .size_full()
-            .items_stretch()
-            .child(self.sidebar.clone())
             .child(
-                v_flex().flex_1().h_full().child(
-                    div()
-                        .size_full()
-                        .overflow_y_scrollbar()
-                        .child(div().w_full().p_4().child(self.render_view(cx))),
-                ),
+                h_flex()
+                    .flex_1()
+                    .h_full()
+                    .min_h_0()
+                    .items_stretch()
+                    .child(self.sidebar.clone())
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .overflow_y_scrollbar()
+                            .child(div().w_full().p_4().child(self.render_view(cx))),
+                    ),
             )
+            .child(AppStatusBar::new())
     }
 }
