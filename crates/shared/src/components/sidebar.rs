@@ -24,6 +24,33 @@ impl AppSidebar {
     fn toggle(&mut self) {
         self.collapsed = !self.collapsed;
     }
+
+    fn toggle_button(
+        &self,
+        id: &'static str,
+        icon: IconName,
+        tooltip_text: &'static str,
+        tooltip_placement: Placement,
+        square: bool,
+        cx: &mut Context<Self>,
+    ) -> Button {
+        Button::new(id)
+            .small()
+            .w_full()
+            .h(px(30.0))
+            .when(square, |this| this.h_7().w_7())
+            .custom(
+                ButtonCustomVariant::new(cx)
+                    .color(cx.theme().transparent)
+                    .foreground(cx.theme().sidebar_foreground)
+                    .hover(cx.theme().sidebar_accent.opacity(0.8))
+                    .active(cx.theme().sidebar_accent.opacity(0.8)),
+            )
+            .icon(icon)
+            .tooltip(tooltip_text)
+            .tooltip_placement(tooltip_placement)
+            .on_click(cx.listener(|this, _event, _window, _cx| this.toggle()))
+    }
 }
 
 impl Default for AppSidebar {
@@ -72,21 +99,14 @@ impl Render for AppSidebar {
                         )
                     })
                     .when(!self.collapsed, |this| {
-                        this.child(
-                            Button::new("sidebar-collapse-button")
-                                .small()
-                                .size_7()
-                                .custom(
-                                    ButtonCustomVariant::new(cx)
-                                        .color(cx.theme().transparent)
-                                        .foreground(cx.theme().sidebar_foreground)
-                                        .hover(cx.theme().sidebar_accent.opacity(0.8))
-                                        .active(cx.theme().sidebar_accent.opacity(0.8)),
-                                )
-                                .icon(IconName::PanelLeftClose)
-                                .tooltip("Collapse sidebar")
-                                .on_click(cx.listener(|this, _event, _window, _cx| this.toggle())),
-                        )
+                        this.child(self.toggle_button(
+                            "sidebar-collapse-button",
+                            IconName::PanelLeftClose,
+                            "Collapse sidebar",
+                            Placement::Bottom,
+                            true,
+                            cx,
+                        ))
                     }),
             )
             .child(
@@ -100,23 +120,14 @@ impl Render for AppSidebar {
                     .w_full()
                     .justify_between()
                     .when(self.collapsed, |this| {
-                        this.child(
-                            Button::new("sidebar-open-button")
-                                .small()
-                                .w_full()
-                                .h(px(30.0))
-                                .custom(
-                                    ButtonCustomVariant::new(cx)
-                                        .color(cx.theme().transparent)
-                                        .foreground(cx.theme().sidebar_foreground)
-                                        .hover(cx.theme().sidebar_accent.opacity(0.8))
-                                        .active(cx.theme().sidebar_accent.opacity(0.8)),
-                                )
-                                .icon(IconName::PanelLeftOpen)
-                                .tooltip("Open sidebar")
-                                .tooltip_placement(Placement::Right)
-                                .on_click(cx.listener(|this, _event, _window, _cx| this.toggle())),
-                        )
+                        this.child(self.toggle_button(
+                            "sidebar-open-button",
+                            IconName::PanelLeftOpen,
+                            "Open sidebar",
+                            Placement::Right,
+                            false,
+                            cx,
+                        ))
                     }),
             )
     }
