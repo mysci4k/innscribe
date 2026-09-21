@@ -11,6 +11,7 @@ path = "src/main.rs"
 
 [dependencies]
 shared.workspace = true
+view.workspace = true
 gpui-kit.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true

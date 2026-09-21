@@ -196,6 +196,7 @@ dependencies = [
  "shared",
  "tracing",
  "tracing-subscriber",
+ "view",
 ]
 
 [[package]]
