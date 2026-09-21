@@ -1,0 +1,117 @@
+use gpui_kit::{
+    Context, FontWeight, IntoElement, ParentElement, Render, Styled, Window,
+    assets::IconName,
+    base::{Placement, StyledExt, h_flex, v_flex},
+    component::{
+        ActiveTheme, Icon, Sizable,
+        button::{Button, ButtonCustomVariant, ButtonVariants},
+        sidebar::{Sidebar, SidebarGroup, SidebarMenu, SidebarMenuItem},
+    },
+    div,
+    prelude::FluentBuilder,
+    px,
+};
+
+pub struct AppSidebar {
+    collapsed: bool,
+}
+
+impl AppSidebar {
+    pub fn new() -> Self {
+        Self { collapsed: false }
+    }
+
+    fn toggle(&mut self) {
+        self.collapsed = !self.collapsed;
+    }
+}
+
+impl Render for AppSidebar {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        Sidebar::new("app-sidebar")
+            .collapsible(true)
+            .collapsed(self.collapsed)
+            .header(
+                div()
+                    .h_flex()
+                    .gap_2()
+                    .w_full()
+                    .justify_between()
+                    .when(!self.collapsed, |this| this.p_2())
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .size_8()
+                            .flex_shrink_0()
+                            .rounded(cx.theme().radius)
+                            .bg(cx.theme().sidebar_primary)
+                            .text_color(cx.theme().sidebar_primary_foreground)
+                            .when(self.collapsed, |this| this.size(px(30.0)))
+                            .child(Icon::new(IconName::ScrollText)),
+                    )
+                    .when(!self.collapsed, |this| {
+                        this.child(
+                            v_flex()
+                                .flex_1()
+                                .overflow_hidden()
+                                .child(
+                                    div()
+                                        .text_lg()
+                                        .font_weight(FontWeight::SEMIBOLD)
+                                        .child("InnScribe"),
+                                )
+                                .child(div().mt_neg_2().text_xs().child("Character Manager")),
+                        )
+                    })
+                    .when(!self.collapsed, |this| {
+                        this.child(
+                            Button::new("sidebar-collapse-button")
+                                .small()
+                                .size_7()
+                                .custom(
+                                    ButtonCustomVariant::new(cx)
+                                        .color(cx.theme().transparent)
+                                        .foreground(cx.theme().sidebar_foreground)
+                                        .hover(cx.theme().sidebar_accent.opacity(0.8))
+                                        .active(cx.theme().sidebar_accent.opacity(0.8)),
+                                )
+                                .icon(IconName::PanelLeftClose)
+                                .tooltip("Collapse sidebar")
+                                .on_click(cx.listener(|this, _event, _window, _cx| this.toggle())),
+                        )
+                    }),
+            )
+            .child(
+                SidebarGroup::new("General").child(
+                    SidebarMenu::new()
+                        .child(SidebarMenuItem::new("Characters").icon(IconName::UserGroup)),
+                ),
+            )
+            .footer(
+                h_flex()
+                    .w_full()
+                    .justify_between()
+                    .when(self.collapsed, |this| {
+                        this.child(
+                            Button::new("sidebar-open-button")
+                                .small()
+                                .w_full()
+                                .h(px(30.0))
+                                .custom(
+                                    ButtonCustomVariant::new(cx)
+                                        .color(cx.theme().transparent)
+                                        .foreground(cx.theme().sidebar_foreground)
+                                        .hover(cx.theme().sidebar_accent.opacity(0.8))
+                                        .active(cx.theme().sidebar_accent.opacity(0.8)),
+                                )
+                                .icon(IconName::PanelLeftOpen)
+                                .tooltip("Open sidebar")
+                                .tooltip_placement(Placement::Right)
+                                .on_click(cx.listener(|this, _event, _window, _cx| this.toggle())),
+                        )
+                    }),
+            )
+    }
+}
