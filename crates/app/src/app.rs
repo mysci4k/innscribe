@@ -1,26 +1,25 @@
 use gpui_kit::{
-    Context, IntoElement, ParentElement, Render, Styled, Window,
-    base::StyledExt,
-    component::button::{Button, ButtonVariants},
-    div,
+    AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, base::h_flex,
 };
+use shared::components::AppSidebar;
 
-pub struct MainApp;
+pub struct MainApp {
+    sidebar: Entity<AppSidebar>,
+}
+
+impl MainApp {
+    pub fn new(cx: &mut Context<Self>) -> Self {
+        let sidebar = cx.new(|_| AppSidebar::new());
+
+        Self { sidebar }
+    }
+}
 
 impl Render for MainApp {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .v_flex()
-            .gap_2()
+        h_flex()
             .size_full()
-            .items_center()
-            .justify_center()
-            .child("Hello, World!")
-            .child(
-                Button::new("ok")
-                    .primary()
-                    .label("Let's Go!")
-                    .on_click(|_event, _window, _cx| println!("Clicked!")),
-            )
+            .items_stretch()
+            .child(self.sidebar.clone())
     }
 }
