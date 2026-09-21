@@ -1,6 +1,10 @@
 [workspace]
 resolver = "3"
-members = ["crates/app", "crates/shared"]
+members = [
+    "crates/app",
+    "crates/shared",
+    "crates/view"
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -10,6 +14,7 @@ publish = false
 
 [workspace.dependencies]
 shared = { path = "crates/shared" }
+view = { path = "crates/view" }
 gpui-kit = { version = "0.6.4" }
 rust-embed = "8.12.0"
 tracing = "0.1.44"
