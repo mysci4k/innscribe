@@ -26,7 +26,6 @@ impl AppSidebar {
     }
 
     fn toggle_button(
-        &self,
         id: &'static str,
         icon: IconName,
         tooltip_text: &'static str,
@@ -99,7 +98,7 @@ impl Render for AppSidebar {
                         )
                     })
                     .when(!self.collapsed, |this| {
-                        this.child(self.toggle_button(
+                        this.child(Self::toggle_button(
                             "sidebar-collapse-button",
                             IconName::PanelLeftClose,
                             "Collapse sidebar",
@@ -120,7 +119,7 @@ impl Render for AppSidebar {
                     .w_full()
                     .justify_between()
                     .when(self.collapsed, |this| {
-                        this.child(self.toggle_button(
+                        this.child(Self::toggle_button(
                             "sidebar-open-button",
                             IconName::PanelLeftOpen,
                             "Open sidebar",
