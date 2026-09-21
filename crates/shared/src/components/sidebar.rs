@@ -26,6 +26,12 @@ impl AppSidebar {
     }
 }
 
+impl Default for AppSidebar {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Render for AppSidebar {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         Sidebar::new("app-sidebar")
