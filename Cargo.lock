@@ -193,6 +193,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "gpui-kit",
+ "settings",
  "shared",
  "tracing",
  "tracing-subscriber",

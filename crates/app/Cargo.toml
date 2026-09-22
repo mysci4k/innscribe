@@ -10,6 +10,7 @@ name = "innscribe"
 path = "src/main.rs"
 
 [dependencies]
+settings.workspace = true
 shared.workspace = true
 view.workspace = true
 gpui-kit.workspace = true
