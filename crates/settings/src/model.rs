@@ -16,6 +16,10 @@ impl AppSettings {
         Self::default()
     }
 
+    pub fn theme(&self) -> &ThemeSettings {
+        &self.theme
+    }
+
     pub fn load_or_init() -> Self {
         let path = paths::settings_path();
         match Self::load_from(path) {
@@ -71,10 +75,22 @@ pub struct ThemeSettings {
     mode: ThemePreference,
 }
 
+impl ThemeSettings {
+    pub fn is_dark(&self) -> bool {
+        self.mode.is_dark()
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum ThemePreference {
     #[default]
     Light,
     Dark,
+}
+
+impl ThemePreference {
+    fn is_dark(&self) -> bool {
+        matches!(self, Self::Dark)
+    }
 }
