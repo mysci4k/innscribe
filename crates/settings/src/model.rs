@@ -20,6 +20,10 @@ impl AppSettings {
         &self.theme
     }
 
+    pub fn theme_mut(&mut self) -> &mut ThemeSettings {
+        &mut self.theme
+    }
+
     pub fn load_or_init() -> Self {
         let path = paths::settings_path();
         match Self::load_from(path) {
@@ -70,18 +74,6 @@ impl AppSettings {
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
-pub struct ThemeSettings {
-    #[serde(default)]
-    mode: ThemePreference,
-}
-
-impl ThemeSettings {
-    pub fn is_dark(&self) -> bool {
-        self.mode.is_dark()
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum ThemePreference {
     #[default]
@@ -89,8 +81,30 @@ pub enum ThemePreference {
     Dark,
 }
 
-impl ThemePreference {
-    fn is_dark(&self) -> bool {
-        matches!(self, Self::Dark)
+#[derive(Debug, Serialize, Deserialize, Default)]
+pub struct ThemeSettings {
+    #[serde(default)]
+    mode: ThemePreference,
+}
+
+impl ThemeSettings {
+    pub fn mode(&self) -> &ThemePreference {
+        &self.mode
+    }
+
+    pub fn is_dark(&self) -> bool {
+        matches!(self.mode, ThemePreference::Dark)
+    }
+
+    pub fn set_dark(&mut self, dark: bool) {
+        self.mode = if dark {
+            ThemePreference::Dark
+        } else {
+            ThemePreference::Light
+        };
+    }
+
+    pub fn change_mode(&mut self) {
+        self.set_dark(!self.is_dark());
     }
 }
