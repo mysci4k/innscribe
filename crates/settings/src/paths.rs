@@ -12,7 +12,7 @@ fn project_dirs() -> ProjectDirs {
         .expect("Failed to get project directories")
 }
 
-pub fn data_dir() -> PathBuf {
+fn data_dir() -> PathBuf {
     project_dirs().data_local_dir().to_path_buf()
 }
 
