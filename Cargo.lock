@@ -6177,6 +6177,7 @@ dependencies = [
  "anyhow",
  "gpui-kit",
  "rust-embed",
+ "tracing",
 ]
 
 [[package]]
