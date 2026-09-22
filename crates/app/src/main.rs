@@ -7,7 +7,7 @@ use gpui_kit::{
     px, size,
 };
 use settings::model::AppSettings;
-use shared::assets::AppAssets;
+use shared::{assets::AppAssets, globals::SettingsGlobal};
 
 use crate::app::MainApp;
 
@@ -19,12 +19,13 @@ fn main() {
     app.run(move |cx| {
         gpui_kit::init(cx);
 
-        let app_settings = AppSettings::load_or_init();
-        let theme_mode = if app_settings.theme().is_dark() {
+        let settings = SettingsGlobal::new(AppSettings::load_or_init());
+        let theme_mode = if settings.theme().is_dark() {
             ThemeMode::Dark
         } else {
             ThemeMode::Light
         };
+        cx.set_global(settings);
         Theme::change(theme_mode, None, cx);
 
         cx.spawn(async move |cx| {
