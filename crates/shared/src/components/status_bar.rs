@@ -1,5 +1,5 @@
 use gpui_kit::{
-    App, IntoElement, RenderOnce, Window,
+    App, BorrowAppContext, IntoElement, RenderOnce, Window,
     assets::IconName,
     component::{
         ActiveTheme, Sizable, Theme, ThemeMode,
@@ -7,6 +7,9 @@ use gpui_kit::{
         status_bar::StatusBar,
     },
 };
+use tracing::warn;
+
+use crate::globals::SettingsGlobal;
 
 #[derive(IntoElement)]
 pub struct AppStatusBar;
@@ -29,11 +32,18 @@ impl AppStatusBar {
             .icon(icon)
             .tooltip("Change theme")
             .on_click(|_, window, cx| {
-                let mode = if cx.theme().is_dark() {
-                    ThemeMode::Light
-                } else {
-                    ThemeMode::Dark
-                };
+                let mode = cx.update_global::<SettingsGlobal, ThemeMode>(|settings, _| {
+                    settings.theme_mut().change_mode();
+                    if let Err(err) = settings.save() {
+                        warn!("Failed to save settings: {}", err);
+                    }
+
+                    if settings.theme().is_dark() {
+                        ThemeMode::Dark
+                    } else {
+                        ThemeMode::Light
+                    }
+                });
 
                 Theme::change(mode, Some(window), cx);
             })
