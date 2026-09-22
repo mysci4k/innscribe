@@ -2,6 +2,7 @@
 resolver = "3"
 members = [
     "crates/app",
+    "crates/settings",
     "crates/shared",
     "crates/view"
 ]
@@ -13,6 +14,7 @@ license = "MIT"
 publish = false
 
 [workspace.dependencies]
+settings = { path = "crates/settings" }
 shared = { path = "crates/shared" }
 view = { path = "crates/view" }
 gpui-kit = "0.6.4"
