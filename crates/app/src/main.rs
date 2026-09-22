@@ -1,7 +1,12 @@
 mod app;
 mod logging;
 
-use gpui_kit::{AppContext, WindowOptions, component::Root, px, size};
+use gpui_kit::{
+    AppContext, WindowOptions,
+    component::{Root, Theme, ThemeMode},
+    px, size,
+};
+use settings::model::AppSettings;
 use shared::assets::AppAssets;
 
 use crate::app::MainApp;
@@ -13,6 +18,14 @@ fn main() {
 
     app.run(move |cx| {
         gpui_kit::init(cx);
+
+        let app_settings = AppSettings::load_or_init();
+        let theme_mode = if app_settings.theme().is_dark() {
+            ThemeMode::Dark
+        } else {
+            ThemeMode::Light
+        };
+        Theme::change(theme_mode, None, cx);
 
         cx.spawn(async move |cx| {
             let window_options = WindowOptions {
