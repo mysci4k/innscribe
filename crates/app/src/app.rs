@@ -1,8 +1,10 @@
-use gpui_kit::assets::Assets;
-use gpui_kit::component::button::{Button, ButtonVariants};
-use gpui_kit::*;
+use gpui_kit::{
+    Context, IntoElement, ParentElement, Render, Styled, Window,
+    component::button::{Button, ButtonVariants},
+    div,
+};
 
-struct HelloWorld;
+pub struct HelloWorld;
 
 impl Render for HelloWorld {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
@@ -21,13 +23,4 @@ impl Render for HelloWorld {
                     .on_click(|_, _, _| println!("Clicked!")),
             )
     }
-}
-
-fn main() {
-    application().with_assets(Assets).run(|cx| {
-        init(cx);
-
-        open_window(WindowOptions::default(), cx, |_, cx| cx.new(|_| HelloWorld))
-            .expect("Failed to open window");
-    });
 }

@@ -1,8 +1,12 @@
-[package]
-name = "innscribe"
+[workspace]
+resolver = "3"
+members = ["crates/app"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
 license = 'MIT'
+publish = false
 
-[dependencies]
+[workspace.dependencies]
 gpui-kit = { version = "0.9.1", features = ["gpui-fast"] }
