@@ -1,6 +1,7 @@
 use gpui_fps::fps_monitor;
 use gpui_kit::{
-    Context, InteractiveElement, IntoElement, ParentElement, Render, Styled, Window, actions,
+    Context, FocusHandle, InteractiveElement, IntoElement, ParentElement, Render, Styled, Window,
+    actions,
     component::button::{Button, ButtonVariants},
     div,
     prelude::FluentBuilder,
@@ -10,17 +11,22 @@ actions!(app, [ToggleFps]);
 
 pub struct AppShell {
     show_fps: bool,
+    focus_handle: FocusHandle,
 }
 
 impl AppShell {
-    pub fn new() -> Self {
-        Self { show_fps: false }
+    pub fn new(cx: &mut Context<Self>) -> Self {
+        Self {
+            show_fps: false,
+            focus_handle: cx.focus_handle(),
+        }
     }
 }
 
 impl Render for AppShell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         div()
+            .track_focus(&self.focus_handle)
             .flex()
             .flex_col()
             .size_full()
