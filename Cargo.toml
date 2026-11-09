@@ -5,3 +5,4 @@ edition = "2024"
 license = 'MIT'
 
 [dependencies]
+gpui-kit = { version = "0.9.1", features = ["gpui-fast"] }
