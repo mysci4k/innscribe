@@ -4,7 +4,7 @@ use gpui_kit::{
     AppContext, WindowOptions, application, assets::Assets, component::init, open_window, px, size,
 };
 
-use crate::app::HelloWorld;
+use crate::app::AppShell;
 
 fn main() {
     application().with_assets(Assets).run(|cx| {
@@ -19,7 +19,7 @@ fn main() {
                 ..Default::default()
             },
             cx,
-            |_, cx| cx.new(|_| HelloWorld),
+            |_, cx| cx.new(|_| AppShell),
         )
         .expect("Failed to open window");
     });

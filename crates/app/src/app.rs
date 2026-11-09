@@ -4,9 +4,9 @@ use gpui_kit::{
     div,
 };
 
-pub struct HelloWorld;
+pub struct AppShell;
 
-impl Render for HelloWorld {
+impl Render for AppShell {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
             .flex()
