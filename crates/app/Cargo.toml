@@ -10,5 +10,6 @@ name = "innscribe"
 path = "src/main.rs"
 
 [dependencies]
+shared.workspace = true
 gpui-kit.workspace = true
 gpui-fps.workspace = true
