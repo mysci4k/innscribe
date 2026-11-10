@@ -7,3 +7,4 @@ publish.workspace = true
 
 [dependencies]
 gpui-kit.workspace = true
+anyhow.workspace = true
