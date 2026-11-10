@@ -1,7 +1,9 @@
 mod app;
 
 use gpui_kit::{
-    AppContext, KeyBinding, WindowOptions, application, assets::Assets, component::init,
+    AppContext, KeyBinding, WindowOptions, application,
+    assets::Assets,
+    component::{Theme, ThemeMode, init},
     open_window, px, size,
 };
 
@@ -12,6 +14,8 @@ fn main() {
         init(cx);
 
         cx.bind_keys([KeyBinding::new("ctrl-shift-f", ToggleFps, None)]);
+
+        Theme::change(ThemeMode::Dark, None, cx);
 
         open_window(
             WindowOptions {
