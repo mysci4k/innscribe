@@ -2,15 +2,15 @@ mod app;
 
 use gpui_kit::{
     AppContext, KeyBinding, WindowOptions, application,
-    assets::Assets,
     component::{Theme, ThemeMode, init},
     open_window, px, size,
 };
+use shared::assets::AppAssets;
 
 use crate::app::{AppShell, ToggleFps};
 
 fn main() {
-    application().with_assets(Assets).run(|cx| {
+    application().with_assets(AppAssets).run(|cx| {
         init(cx);
 
         cx.bind_keys([KeyBinding::new("ctrl-shift-f", ToggleFps, None)]);
