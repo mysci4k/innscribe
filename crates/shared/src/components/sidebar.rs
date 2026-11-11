@@ -59,7 +59,7 @@ impl Render for AppSidebar {
                                     .bg(cx.theme().sidebar_primary.alpha(0.9))
                                     .text_color(cx.theme().sidebar_primary_foreground)
                             })
-                            .child(Icon::new(IconName::GalleryVerticalEnd)),
+                            .child(Icon::new(IconName::Dices)),
                     )
                     .when(!self.collapsed, |this| {
                         this.child(
