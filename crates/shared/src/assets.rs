@@ -5,7 +5,7 @@ use gpui_kit::{
 };
 use std::borrow::Cow;
 
-icon_assets!(ExtraIcons, [Notebook, ScrollText, Swords, Users]);
+icon_assets!(ExtraIcons, [Dices, Notebook, ScrollText, Swords, Users]);
 
 pub struct AppAssets;
 
