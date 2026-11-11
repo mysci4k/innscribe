@@ -82,13 +82,16 @@ impl Render for AppSidebar {
                                         .small()
                                         .w_8()
                                         .h(px(30.0))
+                                        .p_0()
                                         .tooltip("Expand sidebar")
                                         .tooltip_placement(Placement::Right)
                                         .accessibility_label("Expand sidebar")
-                                        .icon(if self.logo_hovered {
-                                            IconName::PanelLeftOpen
+                                        .child(if self.logo_hovered {
+                                            Icon::new(IconName::PanelLeftOpen).with_size(px(16.0))
                                         } else {
-                                            IconName::Dices
+                                            Icon::default()
+                                                .path("icons/innscribe-logo.svg")
+                                                .with_size(px(24.0))
                                         })
                                         .on_click(cx.listener(|this, _, _, cx| this.expand(cx))),
                                 ),
@@ -108,7 +111,9 @@ impl Render for AppSidebar {
                                     .rounded(cx.theme().radius)
                                     .bg(cx.theme().sidebar_primary)
                                     .text_color(cx.theme().sidebar_primary_foreground)
-                                    .child(Icon::new(IconName::Dices)),
+                                    .child(
+                                        Icon::default().path("icons/innscribe-logo.svg").large(),
+                                    ),
                             )
                             .child(
                                 v_flex()
