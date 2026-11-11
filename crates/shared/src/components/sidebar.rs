@@ -1,30 +1,51 @@
 use gpui_kit::{
-    Context, IntoElement, ParentElement, Render, Styled, Window,
+    Context, InteractiveElement, IntoElement, ParentElement, Render, StatefulInteractiveElement,
+    Styled, Window,
     assets::IconName,
-    base::v_flex,
+    base::{Placement, h_flex, v_flex},
     component::{
-        ActiveTheme, Icon,
+        ActiveTheme, Icon, Sizable,
+        button::{Button, ButtonVariants},
         sidebar::{
-            Sidebar, SidebarCollapsible, SidebarGroup, SidebarHeader, SidebarItem, SidebarMenu,
-            SidebarMenuItem,
+            Sidebar, SidebarCollapsible, SidebarGroup, SidebarItem, SidebarMenu, SidebarMenuItem,
         },
     },
     div,
     prelude::FluentBuilder,
-    relative,
+    px, relative,
 };
 
 pub struct AppSidebar {
     collapsed: bool,
+    logo_hovered: bool,
 }
 
 impl AppSidebar {
     pub fn new() -> Self {
-        Self { collapsed: false }
+        Self {
+            collapsed: false,
+            logo_hovered: false,
+        }
     }
 
-    fn toggle(&mut self) {
-        self.collapsed = !self.collapsed
+    fn collapse(&mut self, cx: &mut Context<Self>) {
+        if self.collapsed {
+            return;
+        }
+
+        self.collapsed = true;
+        self.logo_hovered = false;
+        cx.notify();
+    }
+
+    fn expand(&mut self, cx: &mut Context<Self>) {
+        if !self.collapsed {
+            return;
+        }
+
+        self.collapsed = false;
+        self.logo_hovered = false;
+        cx.notify();
     }
 
     fn campaign_menu(&self) -> SidebarMenu {
@@ -43,35 +64,73 @@ impl Render for AppSidebar {
             .collapsible(SidebarCollapsible::Icon)
             .collapsed(self.collapsed)
             .header(
-                SidebarHeader::new()
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .flex_shrink_0()
-                            .when(self.collapsed, |this| {
-                                this.size_4().text_color(cx.theme().foreground)
-                            })
-                            .when(!self.collapsed, |this| {
-                                this.size_8()
-                                    .rounded(cx.theme().radius)
-                                    .bg(cx.theme().sidebar_primary.alpha(0.9))
-                                    .text_color(cx.theme().sidebar_primary_foreground)
-                            })
-                            .child(Icon::new(IconName::Dices)),
-                    )
-                    .when(!self.collapsed, |this| {
-                        this.child(
-                            v_flex()
-                                .text_sm()
-                                .flex_1()
-                                .line_height(relative(1.25))
-                                .overflow_hidden()
-                                .text_ellipsis()
-                                .child("InnScribe")
-                                .child(div().child("Character Manager").text_xs()),
+                h_flex()
+                    .when(self.collapsed, |this| {
+                        this.w_full().justify_center().child(
+                            div()
+                                .id("app-sidebar-logo")
+                                .flex_shrink_0()
+                                .on_hover(cx.listener(|this, hovered: &bool, _, cx| {
+                                    if this.logo_hovered != *hovered {
+                                        this.logo_hovered = *hovered;
+                                        cx.notify();
+                                    }
+                                }))
+                                .child(
+                                    Button::new("app-sidebar-toggle")
+                                        .ghost()
+                                        .small()
+                                        .w_8()
+                                        .h(px(30.0))
+                                        .tooltip("Expand sidebar")
+                                        .tooltip_placement(Placement::Right)
+                                        .accessibility_label("Expand sidebar")
+                                        .icon(if self.logo_hovered {
+                                            IconName::PanelLeftOpen
+                                        } else {
+                                            IconName::Dices
+                                        })
+                                        .on_click(cx.listener(|this, _, _, cx| this.expand(cx))),
+                                ),
                         )
+                    })
+                    .when(!self.collapsed, |this| {
+                        this.w_full()
+                            .gap_2()
+                            .p_2()
+                            .child(
+                                div()
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .flex_shrink_0()
+                                    .size_8()
+                                    .rounded(cx.theme().radius)
+                                    .bg(cx.theme().sidebar_primary)
+                                    .text_color(cx.theme().sidebar_primary_foreground)
+                                    .child(Icon::new(IconName::Dices)),
+                            )
+                            .child(
+                                v_flex()
+                                    .text_sm()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .line_height(relative(1.25))
+                                    .overflow_hidden()
+                                    .text_ellipsis()
+                                    .child("InnScribe")
+                                    .child(div().child("Character Manager").text_xs()),
+                            )
+                            .child(
+                                Button::new("app-sidebar-toggle")
+                                    .ghost()
+                                    .small()
+                                    .flex_shrink_0()
+                                    .tooltip("Collapse sidebar")
+                                    .accessibility_label("Collapse sidebar")
+                                    .icon(IconName::PanelLeftClose)
+                                    .on_click(cx.listener(|this, _, _, cx| this.collapse(cx))),
+                            )
                     }),
             )
             .child(SidebarGroup::new("Library").child(
