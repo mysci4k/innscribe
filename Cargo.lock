@@ -7172,6 +7172,7 @@ name = "views"
 version = "0.1.0"
 dependencies = [
  "gpui-kit",
+ "shared",
 ]
 
 [[package]]
