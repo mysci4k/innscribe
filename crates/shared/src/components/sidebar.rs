@@ -1,6 +1,6 @@
 use gpui_kit::{
-    Context, InteractiveElement, IntoElement, ParentElement, Render, StatefulInteractiveElement,
-    Styled, Window,
+    Context, EventEmitter, InteractiveElement, IntoElement, ParentElement, Render,
+    StatefulInteractiveElement, Styled, Window,
     assets::IconName,
     base::{Placement, h_flex, v_flex},
     component::{
@@ -15,17 +15,36 @@ use gpui_kit::{
     px, relative,
 };
 
+use crate::navigation::AppSection;
+
+pub enum SidebarEvent {
+    Navigate(AppSection),
+}
+
+impl EventEmitter<SidebarEvent> for AppSidebar {}
+
 pub struct AppSidebar {
+    active: AppSection,
     collapsed: bool,
     logo_hovered: bool,
 }
 
 impl AppSidebar {
-    pub fn new() -> Self {
+    pub fn new(active: AppSection) -> Self {
         Self {
+            active,
             collapsed: false,
             logo_hovered: false,
         }
+    }
+
+    pub fn set_active(&mut self, active: AppSection, cx: &mut Context<Self>) {
+        if self.active == active {
+            return;
+        }
+
+        self.active = active;
+        cx.notify();
     }
 
     fn collapse(&mut self, cx: &mut Context<Self>) {
@@ -48,11 +67,26 @@ impl AppSidebar {
         cx.notify();
     }
 
-    fn campaign_menu(&self) -> SidebarMenu {
+    fn nav_item(
+        &self,
+        section: AppSection,
+        label: &'static str,
+        icon: IconName,
+        cx: &mut Context<Self>,
+    ) -> SidebarMenuItem {
+        SidebarMenuItem::new(label)
+            .icon(icon)
+            .active(self.active == section)
+            .on_click(cx.listener(move |_, _, _, cx| {
+                cx.emit(SidebarEvent::Navigate(section));
+            }))
+    }
+
+    fn campaign_menu(&self, cx: &mut Context<Self>) -> SidebarMenu {
         let menu = SidebarMenu::new()
-            .child(SidebarMenuItem::new("Sheet").icon(IconName::ScrollText))
-            .child(SidebarMenuItem::new("Combat").icon(IconName::Swords))
-            .child(SidebarMenuItem::new("Notes").icon(IconName::Notebook));
+            .child(self.nav_item(AppSection::Sheet, "Sheet", IconName::ScrollText, cx))
+            .child(self.nav_item(AppSection::Combat, "Combat", IconName::Swords, cx))
+            .child(self.nav_item(AppSection::Notes, "Notes", IconName::Notebook, cx));
 
         if self.collapsed { menu.pt_2() } else { menu }
     }
@@ -138,13 +172,17 @@ impl Render for AppSidebar {
                             )
                     }),
             )
-            .child(SidebarGroup::new("Library").child(
-                SidebarMenu::new().child(SidebarMenuItem::new("Characters").icon(IconName::Users)),
-            ))
-            .child(SidebarGroup::new("Campaign").child(self.campaign_menu()))
+            .child(
+                SidebarGroup::new("Library").child(SidebarMenu::new().child(self.nav_item(
+                    AppSection::Characters,
+                    "Characters",
+                    IconName::Users,
+                    cx,
+                ))),
+            )
+            .child(SidebarGroup::new("Campaign").child(self.campaign_menu(cx)))
             .footer(
-                SidebarMenuItem::new("Settings")
-                    .icon(IconName::Settings)
+                self.nav_item(AppSection::Settings, "Settings", IconName::Settings, cx)
                     .collapsed(self.collapsed)
                     .render("app-sidebar-settings", window, cx),
             )

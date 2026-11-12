@@ -1,3 +1,3 @@
 mod sidebar;
 
-pub use sidebar::AppSidebar;
+pub use sidebar::{AppSidebar, SidebarEvent};
