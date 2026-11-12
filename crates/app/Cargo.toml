@@ -14,3 +14,5 @@ shared.workspace = true
 views.workspace = true
 gpui-kit.workspace = true
 gpui-fps.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
