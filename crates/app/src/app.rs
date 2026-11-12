@@ -1,28 +1,26 @@
 use gpui_fps::fps_monitor;
 use gpui_kit::{
     AppContext, Context, Entity, FocusHandle, InteractiveElement, IntoElement, ParentElement,
-    Render, Styled, Window, actions,
-    base::{h_flex, v_flex},
-    prelude::FluentBuilder,
+    Render, Styled, Window, actions, base::v_flex, prelude::FluentBuilder,
 };
-use shared::components::AppSidebar;
+use views::workspace::WorkspaceView;
 
 actions!(app, [ToggleFps]);
 
 pub struct AppShell {
+    workspace: Entity<WorkspaceView>,
     show_fps: bool,
     focus_handle: FocusHandle,
-    sidebar: Entity<AppSidebar>,
 }
 
 impl AppShell {
-    pub fn new(cx: &mut Context<Self>) -> Self {
-        let sidebar = cx.new(|_| AppSidebar::new());
+    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let workspace = cx.new(|cx| WorkspaceView::new(window, cx));
 
         Self {
+            workspace,
             show_fps: false,
             focus_handle: cx.focus_handle(),
-            sidebar,
         }
     }
 }
@@ -36,7 +34,7 @@ impl Render for AppShell {
                 cx.notify();
             }))
             .size_full()
-            .child(h_flex().h_full().child(self.sidebar.clone()))
+            .child(v_flex().flex_1().min_h_0().child(self.workspace.clone()))
             .when(self.show_fps, |this| this.child(fps_monitor(window, cx)))
     }
 }

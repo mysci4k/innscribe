@@ -26,7 +26,7 @@ fn main() {
                 ..Default::default()
             },
             cx,
-            |_, cx| cx.new(AppShell::new),
+            |window, cx| cx.new(|cx| AppShell::new(window, cx)),
         )
         .expect("Failed to open window");
     });
