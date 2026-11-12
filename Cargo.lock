@@ -194,6 +194,7 @@ dependencies = [
  "gpui-fps",
  "gpui-kit",
  "shared",
+ "views",
 ]
 
 [[package]]
